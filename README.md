@@ -1,6 +1,11 @@
+# Yii 2.0 Notification
+
 
 ## Install
 
+```
+composer require --prefer-dist "mirocow/yii2-notification"
+```
 
 ## Configurate
 
