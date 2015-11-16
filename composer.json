@@ -1,0 +1,28 @@
+{
+    "name": "mirocow/yii2-notification",
+    "description": "Yii2 notification",
+    "license": "MIT",
+    "keywords": ["yii2", "eav", "attribute", "notification", "email", "sms"],
+    "type": "yii2-extension",
+    "authors": [
+        {
+            "name": "Mirocow",
+            "email": "mr.mirocow@gmail.com",
+            "homepage": "http://mirocow.com",
+            "role": "Developer"
+        }        
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php":">=5.4.0",
+        "yiisoft/yii2": ">=2.0.5"
+    },
+    "require-dev": {
+        "yiisoft/yii2-codeception": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "mirocow\\notification\\": "./src"
+        }
+    }
+}
