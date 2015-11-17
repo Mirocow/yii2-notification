@@ -17,16 +17,16 @@ class Module extends \yii\base\Module
     public $emailViewPath = '';
 
     public $emailView = 'email-base.tpl.php';
-
+    
     private $provider = null;
 
     public function init()
     {
-        Yii::setAlias('@' . $this->id, __DIR__);
+        //Yii::setAlias('@' . $this->id, __DIR__);
 
-        Yii::setAlias('@' . $this->id . '/tpl', __DIR__ . '/tpl');
+        //Yii::setAlias('@' . $this->id . '/tpl', __DIR__ . '/tpl');
 
-        parent::init();
+        parent::init();        
 
     }
 
