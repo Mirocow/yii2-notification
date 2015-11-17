@@ -10,7 +10,7 @@ namespace mirocow\notification\providers;
 
 use Yii;
 
-$path = Yii::getAlias('@notification');
+$path = Yii::getAlias('@mirocow/notification');
 
 require_once($path . '/vendor/Rediska/library/Rediska.php');
 
