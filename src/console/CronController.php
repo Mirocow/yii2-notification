@@ -5,7 +5,7 @@ namespace mirocow\notification\console;
 use Yii;
 use yii\console\Controller;
 
-$path = Yii::getAlias('@notification');
+$path = Yii::getAlias('@mirocow/notification');
 
 require_once($path . '/vendor/Rediska/library/Rediska.php');
 

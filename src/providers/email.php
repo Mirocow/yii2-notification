@@ -23,13 +23,6 @@ class email
         'class' => 'Swift_MailTransport',
     ];
 
-    public function __construct()
-    {
-
-        //$this->config['emailViewPath'] = dirname(__FILE__) . '/../tpl';
-
-    }
-
     public function send($params)
     {
 
