@@ -14,7 +14,6 @@ composer require --prefer-dist "mirocow/yii2-notification"
         // Notification by providers
         'notification' => [
           'class' => 'mirocow\notification\Module',
-          'emailViewPath' => '@app/email',
           'providers' => [
 
               // SMS prostor-sms.ru
@@ -49,7 +48,7 @@ composer require --prefer-dist "mirocow/yii2-notification"
               'email' => [
                 'class' => 'mirocow\notification\providers\email',
                 'config' => [
-                  'from' => ['request@vse-avtoservisy.ru' => 'vse-avtoservisy'],
+                  'from' => ['request@myhost.com' => 'My host.com'],
                   'class' => 'Swift_SmtpTransport',
                   'charset' => 'utf-8',
                   'host' => '',
@@ -65,3 +64,9 @@ composer require --prefer-dist "mirocow/yii2-notification"
 ```
 
 ## Using
+
+## Run console
+
+```
+php ./yii notification/cron/send
+```

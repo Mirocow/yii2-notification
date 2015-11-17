@@ -14,20 +14,17 @@ class Module extends \yii\base\Module
 
     public $config = [];
 
-    public $emailViewPath = '';
+    public $emailViewPath = '@mirocow/notification/tpl';
 
     public $emailView = 'email-base.tpl.php';
     
     private $provider = null;
-
+    
     public function init()
     {
-        //Yii::setAlias('@' . $this->id, __DIR__);
-
-        //Yii::setAlias('@' . $this->id . '/tpl', __DIR__ . '/tpl');
-
-        parent::init();        
-
+      
+      parent::init();
+      
     }
 
     public function provider($name)

@@ -1,6 +1,6 @@
 <?php
 
-namespace mirocow\notification\console;
+namespace mirocow\notification\controllers;
 
 use Yii;
 use yii\console\Controller;
