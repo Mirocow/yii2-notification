@@ -65,6 +65,26 @@ composer require --prefer-dist "mirocow/yii2-notification"
 
 ## Using
 
+```php
+    $email = [
+      'to' => 'notification@mirocow.com
+      //'from_name' => '',
+      'subject' => 'Subject example
+      'message' => '<h1>Content example</h1>'
+    ];
+    
+    /* @var Notification $notification */
+    $notification = Yii::$app->getModule('notification');    
+    
+    $notification->sendMessage([$email], function ($mail, $status) use (&$errors) {
+
+        $errors[] = Yii::t('core', 'Email {mail} sent', [
+          'mail' => $mail['to']
+        ]);
+
+    });
+```
+
 ## Run console
 
 ```
