@@ -19,13 +19,6 @@ class Module extends \yii\base\Module
     public $emailView = 'email-base.tpl.php';
     
     private $provider = null;
-    
-    public function init()
-    {
-      
-      parent::init();
-      
-    }
 
     public function provider($name)
     {
