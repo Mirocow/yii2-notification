@@ -43,7 +43,6 @@ class CronController extends Controller
 
         try {
 
-            /* @var Notification $notification */
             $notification = Yii::$app->getModule('notification');
             $provider = $notification->providers['mailQueue'];
             $rediska = new \Rediska($provider['config']);
@@ -80,8 +79,8 @@ class CronController extends Controller
                             $queue[] = $mail;
                         }
 
-                        $this->stderr("Не удалось отправить письмо: {$mail['to']} '{$mail['subject']}'\n");
-                        $this->stderr(sprintf("Err: '%s' in %s: %s\n", $e->getMessage(), $e->getFile(), $e->getLine()));
+                        echo "Не удалось отправить письмо: {$mail['to']} '{$mail['subject']}'\n";
+                        echo sprintf("Err: '%s' in %s: %s\n", $e->getMessage(), $e->getFile(), $e->getLine());
 
                     }
 
@@ -89,7 +88,7 @@ class CronController extends Controller
 
             }
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             print_r($e);
             die();
         }
