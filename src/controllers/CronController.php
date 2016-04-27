@@ -45,7 +45,7 @@ class CronController extends Controller
 
             $notification = Yii::$app->getModule('notification');
             $provider = $notification->providers['mailQueue'];
-            $rediska = new \Rediska($provider['config']);
+            //$rediska = new \Rediska($provider['config']);
             $queue = new \Rediska_Key_List('emails_queue');
 
             while ($mail = $queue->shift()) {
