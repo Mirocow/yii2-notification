@@ -80,8 +80,8 @@ class CronController extends Controller
                             $queue[] = $mail;
                         }
 
-                        echo "Не удалось отправить письмо: {$mail['to']} '{$mail['subject']}'\n";
-                        echo var_dump($e);
+                        $this->stderr("Не удалось отправить письмо: {$mail['to']} '{$mail['subject']}'\n");
+                        $this->stderr(sprintf("Err: '%s' in %s: %s\n", $e->getMessage(), $e->getFile(), $e->getLine()));
 
                     }
 
