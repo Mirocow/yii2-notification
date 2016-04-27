@@ -81,6 +81,7 @@ class CronController extends Controller
                         }
 
                         echo "Не удалось отправить письмо: {$mail['to']} '{$mail['subject']}'\n";
+                        echo var_dump($e);
 
                     }
 
