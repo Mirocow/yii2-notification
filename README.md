@@ -3,7 +3,7 @@
 
 ## Install
 
-```
+```sh
 composer require --prefer-dist "mirocow/yii2-notification"
 ```
 
@@ -33,13 +33,10 @@ composer require --prefer-dist "mirocow/yii2-notification"
                 'class' => 'mirocow\notification\providers\mailQueue',
                 'debug' => true,
                 'config' => [
-                  'servers' => [
-                    [
-                      'host' => 'localhost',
-                      'port' => 6379,
-                      //'password' => '',
-                      'db' => 2,
-                    ],
+                  'hostname' => 'localhost',
+                  'port' => 6379,
+                  //'password' => '',
+                  'database' => 0,
                   ],
                 ]
               ],
@@ -87,6 +84,12 @@ composer require --prefer-dist "mirocow/yii2-notification"
 
 ## Run console
 
-```
+```php
 php ./yii notification/cron/send
+```
+
+## Simle notification form
+
+```php
+http://host-name.com/notification/simple/send/
 ```

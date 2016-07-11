@@ -17,7 +17,7 @@ class Module extends \yii\base\Module
     public $emailViewPath = '@mirocow/notification/tpl';
 
     public $emailView = 'email-base.tpl.php';
-    
+
     private $provider = null;
 
     public function provider($name)
@@ -25,22 +25,8 @@ class Module extends \yii\base\Module
 
         if (!isset($this->_providers[$name])) {
             if (isset($this->providers[$name])) {
-                $params = $this->providers[$name];
-                $class = Yii::getAlias($params['class']);
-                $provider = new $class;
-
-                foreach ($params['config'] as $param_name => $param_value) {
-                    if (isset($provider->config[$param_name])) {
-
-                        $provider->config[$param_name] = $param_value;
-
-                    }
-                }
-
-                $this->provider = $provider;
-
+                $this->provider = Yii::createObject($this->providers[$name]);
                 $this->_providers[$name] = $this;
-
             }
         }
 
@@ -50,34 +36,22 @@ class Module extends \yii\base\Module
 
     public function send($params = [], $method = 'send')
     {
-
         if ($this->provider) {
-
             if (method_exists($this->provider, $method)) {
                 return call_user_func_array([$this->provider, $method],
                     [$params]);
             }
-
         }
 
         return false;
-
     }
 
     public function getTemplate($template, $params = [])
     {
-
         $template = Yii::getAlias($this->emailViewPath . '/' . $template . '.tpl.php');
-
         $view = Yii::$app->getView();
-
         $content = $view->renderFile($template, $params);
-
-        $content = str_replace(array_keys($params), array_values($params),
-            $content);
-
-        return $content;
-
+        return str_replace(array_keys($params), array_values($params), $content);
     }
 
     public function sendMessage($mails, $callBackStatus = null)
@@ -85,7 +59,7 @@ class Module extends \yii\base\Module
 
         if ($mails) {
 
-            /* @var Notification $notification */
+            /* @var self $notification */
             $notification = Yii::$app->getModule('notification');
 
             foreach ($mails as $mail) {

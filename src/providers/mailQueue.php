@@ -9,68 +9,46 @@
 namespace mirocow\notification\providers;
 
 use Yii;
+use yii\base\Component;
+use yii\base\InvalidConfigException;
+use yii\redis\Connection;
 
-$path = Yii::getAlias('@mirocow/notification');
-
-require_once($path . '/vendor/Rediska/library/Rediska.php');
-
-class mailQueue
+class mailQueue extends Component
 {
-
-    public static $rediska = false;
-
     public $debug = false;
 
+    public $db = false;
+
+    public $queue_name = 'emails_queue';
+
     public $config = [
-        'servers' => [
-            [
-                'host' => 'localhost',
-                'port' => 6379,
-                'password' => '',
-                'db' => 2,
-            ],
-        ],
+        'hostname' => 'localhost',
+        'port' => 6379,
+        'database' => 0,
     ];
 
-    public function __construct()
+    public function init()
     {
-
-        self::$rediska = new \Rediska($this->config);
-
+        $this->db = new Connection($this->config);
+        if(!$this->db){
+            throw new InvalidConfigException(Yii::t('app', 'Driver queue incorrectly configured'));
+        }
+        $this->db->open();
     }
 
     public function push($args = [])
     {
-
-        $args['to'] = $this->debug ? $this->debug_mail : trim($args['to']);
-
-        $list = new \Rediska_Key_List('emails_queue');
-
-        try {
-            $list[] = @serialize($args);
-
-            return true;
-
-        } catch (\Exception  $e) {
-
-            return false;
-
-        }
+        $args['to'] = trim($args['to']);
+        return $this->db->rpush($this->queue_name, @serialize($args));
     }
 
     public function pop()
     {
-        $list = new \Rediska_Key_List('emails_queue');
-        if (count($list)) {
-            return $list->pop();
-        } else {
-            return false;
-        }
+        return $this->db->rpop($this->queue_name);
     }
 
-    public static function getQueue()
-    {
-        return new \Rediska_Key_List('emails_queue');
+    public function flushdb(){
+        $this->db->flushdb();
     }
 
 }

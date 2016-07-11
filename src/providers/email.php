@@ -3,8 +3,9 @@
 namespace mirocow\notification\providers;
 
 use Yii;
+use yii\base\Component;
 
-class email
+class email extends Component
 {
 
     public $config = [

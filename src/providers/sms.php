@@ -1,6 +1,7 @@
 <?php
 
 namespace mirocow\notification\providers;
+use yii\base\Component;
 
 /**
  * Created by PhpStorm.
@@ -8,7 +9,7 @@ namespace mirocow\notification\providers;
  * Date: 24.08.14
  * Time: 20:44
  */
-class sms
+class sms extends Component
 {
     public $config = [
         'gate' => '',

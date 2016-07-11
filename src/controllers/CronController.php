@@ -7,8 +7,6 @@ use yii\console\Controller;
 
 $path = Yii::getAlias('@mirocow/notification');
 
-require_once($path . '/vendor/Rediska/library/Rediska.php');
-
 class CronController extends Controller
 {
 
@@ -44,11 +42,15 @@ class CronController extends Controller
         try {
 
             $notification = Yii::$app->getModule('notification');
-            $provider = $notification->providers['mailQueue'];
-            $rediska = new \Rediska($provider['config']);
-            $queue = new \Rediska_Key_List('emails_queue');
+            $provider = Yii::createObject($notification->providers['mailQueue']);
 
-            while ($mail = $queue->shift()) {
+            while ($mail = $provider->pop()) {
+
+                if(empty($mail)){
+                    continue;
+                }
+
+                $mail = @unserialize($mail);
 
                 if (!$mail['to']) {
                     continue;
@@ -63,9 +65,6 @@ class CronController extends Controller
                     try {
 
                         $result = $notification->provider('email')->send($mail);
-
-                        $counter = new \Rediska_Key('total_emails_sent');
-                        $counter->increment();
 
                         echo "Письмо отправленно: {$mail['to']} '{$mail['subject']}'\n";
 

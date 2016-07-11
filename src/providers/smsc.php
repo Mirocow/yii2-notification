@@ -3,6 +3,7 @@
 namespace mirocow\notification\providers;
 
 use Yii;
+use yii\base\Component;
 
 /**
  * Created by PhpStorm.
@@ -10,7 +11,7 @@ use Yii;
  * Date: 24.08.14
  * Time: 20:44
  */
-class smsc
+class smsc extends Component
 {
     public $config = [
         'class' => 'ladamalina\smsc\Smsc',
