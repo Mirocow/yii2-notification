@@ -32,6 +32,7 @@ composer require --prefer-dist "mirocow/yii2-notification"
               'mailQueue' => [
                 'class' => 'mirocow\notification\providers\mailQueue',
                 'debug' => true,
+                'queue_name' => 'emails_queue',
                 'config' => [
                   'hostname' => 'localhost',
                   'port' => 6379,
