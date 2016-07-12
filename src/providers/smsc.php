@@ -14,7 +14,6 @@ use yii\base\Component;
 class smsc extends Component
 {
     public $config = [
-        'class' => 'ladamalina\smsc\Smsc',
         'login' => '',
         'password' => '',
         'post' => true,
@@ -29,7 +28,7 @@ class smsc extends Component
 
     public function send($args = [])
     {
-        $sms = Yii::createObject($this->config);
+        $sms = Yii::createObject(array_merge(['class' => 'ladamalina\smsc\Smsc'], $this->config));
 
         $result = $sms->send_sms($args['phone'], $args['message']);
         if ($sms->isSuccess($result)) {
