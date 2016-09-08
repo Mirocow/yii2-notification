@@ -18,17 +18,17 @@ class CronController extends Controller
     {
         $this->start = time();
 
-        echo '[' . date('d.m.Y h:i',
-                $this->start) . "] Запущена отсылка писем \n\n";
+        /*echo '[' . date('d.m.Y h:i',
+                $this->start) . "] Запущена отсылка писем \n\n";*/
 
         register_shutdown_function([$this, 'finish'], true);
     }
 
     public function finish()
     {
-        $end = $this->start;
+        /*$end = $this->start;
 
-        echo '[' . date('d.m.Y h:i', $end) . "] Отсылка писем завершена\n\n";
+        echo '[' . date('d.m.Y h:i', $end) . "] Отсылка писем завершена\n\n";*/
     }
 
     /**
