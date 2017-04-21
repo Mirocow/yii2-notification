@@ -14,21 +14,18 @@ class CronController extends Controller
 
     private $start;
 
+    private $end;
+
     public function init()
     {
-        $this->start = time();
-
-        /*echo '[' . date('d.m.Y h:i',
-                $this->start) . "] Запущена отсылка писем \n\n";*/
+        $this->start = microtime(true);
 
         register_shutdown_function([$this, 'finish'], true);
     }
 
     public function finish()
     {
-        /*$end = $this->start;
-
-        echo '[' . date('d.m.Y h:i', $end) . "] Отсылка писем завершена\n\n";*/
+        $this->end = $this->start - microtime(true);
     }
 
     /**
@@ -41,10 +38,12 @@ class CronController extends Controller
 
         try {
 
+            /** @var \mirocow\notification\Module $notification */
             $notification = Yii::$app->getModule('notification');
-            $provider = Yii::createObject($notification->providers['mailQueue']);
+            $queueProvider =  $notification->provider('mailQueue');
+            $emailProvider =  $notification->provider('email');
 
-            while ($mail = $provider->pop()) {
+            while ($mail = $queueProvider->pop()) {
 
                 if(empty($mail)){
                     continue;
@@ -64,7 +63,7 @@ class CronController extends Controller
 
                     try {
 
-                        $result = $notification->provider('email')->send($mail);
+                        $result = $emailProvider->send($mail);
 
                         echo "Письмо отправленно: {$mail['to']} '{$mail['subject']}'\n";
 

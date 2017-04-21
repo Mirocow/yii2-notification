@@ -1,17 +1,16 @@
 <?php
 
 namespace mirocow\notification\providers;
-
+use mirocow\notification\components\Notification;
+use mirocow\notification\components\Provider;
 use Yii;
 use yii\base\Component;
 
 /**
- * Created by PhpStorm.
- * User: mirocow
- * Date: 24.08.14
- * Time: 20:44
+ * Class smsc
+ * @package mirocow\notification\providers
  */
-class smsc extends Component
+class smsc extends Provider
 {
     public $config = [
         'login' => '',
@@ -26,11 +25,17 @@ class smsc extends Component
         // debug mode
     ];
 
-    public function send($args = [])
+    /**
+     * @param Notification $notification
+     * @return bool
+     */
+    public function send(Notification $notification)
     {
+        if(empty($notification->phone)) return;
+
         $sms = Yii::createObject(array_merge(['class' => 'ladamalina\smsc\Smsc'], $this->config));
 
-        $result = $sms->send_sms($args['phone'], $args['message']);
+        $result = $sms->send_sms($notification->phone, $notification->message);
         if ($sms->isSuccess($result)) {
             return true;
         } else {

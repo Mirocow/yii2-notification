@@ -38,7 +38,6 @@ composer require --prefer-dist "mirocow/yii2-notification"
                   'port' => 6379,
                   //'password' => '',
                   'database' => 0,
-                  ],
                 ]
               ],
 
@@ -55,13 +54,14 @@ composer require --prefer-dist "mirocow/yii2-notification"
                   'password' => ''
                 ]
               ]
-
-          ]
-        ],
-    ]        
+          ],
+        ]
+    ],        
 ```
 
 ## Using
+
+### By method send
 
 ```php
     $email = [
@@ -74,7 +74,7 @@ composer require --prefer-dist "mirocow/yii2-notification"
     /* @var Notification $notification */
     $notification = Yii::$app->getModule('notification');    
     
-    $notification->sendMessage([$email], function ($mail, $status) use (&$errors) {
+    $notification->send($email, function ($mail, $status) use (&$errors) {
 
         $errors[] = Yii::t('core', 'Email {mail} sent', [
           'mail' => $mail['to']
@@ -83,14 +83,26 @@ composer require --prefer-dist "mirocow/yii2-notification"
     });
 ```
 
+### By Event
+
+```php
+use yii\base\Event;
+use mirocow\notification\components\Notification;
+
+$event = new Notification(['params' => [
+  'from' => [\Yii::$app->params['supportEmail'] => \Yii::$app->name . ' robot'],
+  'to' => $user->email,
+  'subject' => 'Регистрация на сайте ' . \Yii::$app->name,
+  'emailView' => ['html' => 'signUp-html', 'text' => 'signUp-text'],
+  'user' => $user,
+  'phone' => $user->phone_number,
+  'notify' => ['growl', 'На Ваш email отправлено письмо для подтверждения'],
+]]);
+Notification::trigger(self::className(),'actionSignup', $event);
+```
+
 ## Run console
 
 ```php
 php ./yii notification/cron/send
-```
-
-## Simle notification form
-
-```php
-http://host-name.com/notification/simple/send/
-```
+```               

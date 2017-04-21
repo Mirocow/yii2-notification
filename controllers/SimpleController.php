@@ -23,7 +23,7 @@ class SimpleController extends \yii\web\Controller
 
             $mails = [];
             
-            /* @var Notification $notification */
+            /* @var \mirocow\notification\Module $notification */
             $notification = Yii::$app->getModule('notification');            
 
             if(preg_match('~\s~', $model->to)){
@@ -43,7 +43,7 @@ class SimpleController extends \yii\web\Controller
                       'message' => $model->message,
                     ];
                     
-                    $notification->sendMessage([$email], function ($mail, $status) use (&$errors) {
+                    $notification->send($email, function ($mail, $status) use (&$errors) {
 
                         $errors[] = Yii::t('core', 'На почтовый ящик {mail} выслано письмо', [
                           'mail' => $mail['to']

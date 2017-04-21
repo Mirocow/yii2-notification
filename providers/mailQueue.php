@@ -8,16 +8,23 @@
 
 namespace mirocow\notification\providers;
 
+use mirocow\notification\components\Provider;
+use mirocow\notification\components\Notification;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\redis\Connection;
 
-class mailQueue extends Component
+/**
+ * Class mailQueue
+ * @package mirocow\notification\providers
+ */
+class mailQueue extends Provider
 {
     public $debug = false;
 
-    public $db = false;
+    /** @var Connection null */
+    public $db = null;
 
     public $queue_name = 'emails_queue';
 
@@ -36,10 +43,16 @@ class mailQueue extends Component
         $this->db->open();
     }
 
-    public function push($args = [])
+    /**
+     * @param Notification $notification
+     * @return mixed
+     */
+    public function send(Notification $notification)
     {
-        $args['to'] = trim($args['to']);
-        return $this->db->rpush($this->queue_name, @serialize($args));
+        if(empty($notification->to)) return;
+
+        $params['to'] = trim($notification->to);
+        return $this->db->rpush($this->queue_name, @serialize($params));
     }
 
     public function pop()
