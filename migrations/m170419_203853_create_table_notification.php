@@ -1,5 +1,6 @@
 <?php
 
+use yii\db\Expression;
 use yii\db\Migration;
 
 class m170419_203853_create_table_notification extends Migration
@@ -14,8 +15,8 @@ class m170419_203853_create_table_notification extends Migration
           'title' => $this->string(255),
           'message' => $this->text(),
           'params' => $this->text(),
-          'update_at' => $this->timestamp(),
-          'create_at' => $this->timestamp(),
+          'update_at' => $this->timestamp()->defaultValue(new Expression('CURRENT_TIMESTAMP')),
+          'create_at' => $this->timestamp()->defaultValue(new Expression('CURRENT_TIMESTAMP')),
         ]);
 
     }
