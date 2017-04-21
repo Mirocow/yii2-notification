@@ -4,7 +4,8 @@
 ## Install
 
 ```sh
-composer require --prefer-dist "mirocow/yii2-notification"
+$ composer require --prefer-dist "mirocow/yii2-notification"
+$ php ./yii migrate/up -p=@mirocow/notification/migrations
 ```
 
 ## Configurate
