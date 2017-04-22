@@ -33,7 +33,7 @@ class web  extends Provider
             $message->title   = $notification->subject;
             $message->message = $notification->message;
             $message->setParams(ArrayHelper::merge(['event' => $notification->name], $notification->params));
-            $message->save();
+            $this->status[$toId] = $message->save();
         }
 
         return true;

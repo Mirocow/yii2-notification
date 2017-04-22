@@ -51,8 +51,17 @@ class mailQueue extends Provider
     {
         if(empty($notification->to)) return;
 
-        $params['to'] = trim($notification->to);
-        return $this->db->rpush($this->queue_name, @serialize($params));
+        if(is_array($notification->to)){
+            $emails = $notification->to;
+        } else {
+            $emails = [$notification->to];
+        }
+
+        foreach ($emails as $email){
+            $params['to'] = trim($email);
+            $this->status[$email] = $this->db->rpush($this->queue_name, @serialize($params));
+        }
+
     }
 
     public function pop()

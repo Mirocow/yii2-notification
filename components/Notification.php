@@ -14,20 +14,20 @@ class Notification extends Event
     /** @var int  */
     public $fromId = 0;
 
-    /** @var int */
-    public $toId = 0;
+    /** @var array  */
+    public $toId = [];
 
     /** @var array  */
     public $from = [];
 
-    /** @var string  */
-    public $to = '';
+    /** @var array  */
+    public $to = [];
 
-    /** @var string */
-    public $phone = '';
+    /** @var array  */
+    public $phone = [];
 
-    /** @var string  */
-    public $token = '';
+    /** @var array  */
+    public $token = [];
 
     /** @var string  */
     public $subject = '';

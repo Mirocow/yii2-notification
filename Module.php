@@ -34,9 +34,10 @@ class Module extends \yii\base\Module implements BootstrapInterface
         /** @var Provider $provider */
         $provider = Yii::createObject($notification->data['provider']);
         if(!$provider) return;
-        $status = $provider->send($notification);
+
+        $provider->send($notification);
         if (isset($notification->callback) && is_callable($notification->callback)) {
-            call_user_func_array($notification->callback, [$provider, $status]);
+            call_user_func_array($notification->callback, [$provider, $provider->status]);
         }
     }
 
@@ -47,23 +48,26 @@ class Module extends \yii\base\Module implements BootstrapInterface
     public function send($params = [], $callback = null)
     {
         foreach ($this->providers as $name => $provider) {
+            /** @var Provider $provider */
             $provider = $this->provider($name);
             if(!$provider) continue;
+
             if(is_array($params)){
                 $notification = new Notification;
-                foreach ($params as $name => $param){
-                    if(!isset( $notification->{$name})) continue;
-                    $notification->{$name} = $param;
+                foreach ($params as $param => $value){
+                    if(!isset( $notification->{$param})) continue;
+                    $notification->{$param} = $value;
                 }
-                $status = $provider->send($notification);
+                $provider->send($notification);
             } elseif(is_a($params, 'Notification')){
-                $status = $provider->send($params);
+                /** @var Notification $params */
+                $provider->send($params);
             } else {
                 throw new \Exception();
             }
 
             if (is_callable($callback)) {
-                call_user_func_array($callback, [$params, $status]);
+                call_user_func_array($callback, [$params, $provider->status]);
             }
         }
     }

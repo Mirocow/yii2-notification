@@ -5,7 +5,6 @@ namespace mirocow\notification\providers;
 use mirocow\notification\components\Notification;
 use mirocow\notification\components\Provider;
 use Yii;
-use yii\base\Component;
 use yii\base\Exception;
 
 /**
@@ -61,12 +60,20 @@ class email extends Provider
 
         $params = array_merge($notification->params, ['message' => $notification->message]);
 
-        return $mailer->compose($emailView, $params)
-            ->setFrom($from)
-            ->setTo($notification->to)
-            ->setSubject($notification->subject)
-            ->send();
+        if (is_array($notification->to)) {
+            $emails = $notification->to;
+        }
+        else {
+            $emails = [$notification->to];
+        }
 
+        foreach ($emails as $email) {
+            $this->status[$email] = $mailer->compose($emailView, $params)
+                                     ->setFrom($from)
+                                     ->setTo($email)
+                                     ->setSubject($notification->subject)
+                                     ->send();
+        }
     }
 
 }
