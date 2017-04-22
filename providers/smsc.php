@@ -33,9 +33,10 @@ class smsc extends Provider
     {
         if(empty($notification->phone)) return;
 
+        /** @var \ladamalina\smsc\Smsc $sms */
         $sms = Yii::createObject(array_merge(['class' => 'ladamalina\smsc\Smsc'], $this->config));
 
-        $result = $sms->send_sms($notification->phone, $notification->message);
+        $result = $sms->send_sms($notification->phone, $notification->subject);
         if ($sms->isSuccess($result)) {
             return true;
         } else {
