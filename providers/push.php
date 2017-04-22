@@ -21,7 +21,7 @@ class push  extends Provider
     {
         if(empty($notification->token)) return;
 
-        $push = Yii::createObject(array_merge(['class' => 'develandoo\notification\Push'], $this->config));
+        $push = Yii::createObject(array_merge(['class' => 'mirocow\notification\components\Push'], $this->config));
 
         if(is_array($notification->token)){
             $tokens = $notification->token;
