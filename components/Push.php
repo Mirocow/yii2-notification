@@ -157,19 +157,19 @@ class Push extends Component
      * @param $payload
      * @return mixed
      */
-    public function send($id, $payload)
+    public function send($token, $payload)
     {
         if ($this->type) {
             switch ($this->type) {
                 case self::TYPE_GCM:
-                    self::sendGcm($id, $payload);
+                    return self::sendGcm($token, $payload);
                     break;
                 case self::TYPE_APNS:
-                    self::sendApns($id, $payload);
+                    return self::sendApns($token, $payload);
                     break;
             }
         } else {
-            $tokens = self::splitDeviceTokens($id);
+            $tokens = self::splitDeviceTokens($token);
 
             if (!empty(ArrayHelper::getValue($tokens, 'apns'))) {
                 self::sendApns(ArrayHelper::getValue($tokens, 'apns'), $payload);
@@ -219,10 +219,13 @@ class Push extends Component
             curl_close($curl);
 
             if ($err) {
-                throw new Exception($err);
+                Yii::error($err);
+                return false;
             }
 
             Yii::info($result);
+
+            return true;
         }
     }
 
@@ -248,37 +251,30 @@ class Push extends Component
         $fp = stream_socket_client($path, $err, $message, 60, STREAM_CLIENT_CONNECT | STREAM_CLIENT_PERSISTENT, $this->ctx);
 
         if (!$fp) {
-            throw new Exception("Failed to connect: $err $message");
+            Yii::error(['error' => $err , 'message' => $message]);
+            return false;
         }
 
         if (is_array($body)) {
             $body = Json::encode($body);
         }
 
-        $tokens = [];
+        $ret = false;
 
-        if (is_string($token)) {
-            $tokens[] = $token;
-        } else {
-            $tokens = $token;
-        }
-
-        foreach ($tokens as $token) {
-            try {
-                $msg = chr(0) . pack('n', 32) . pack('H*', $token) . pack('n', strlen($body)) . $body;
-
-                $result = fwrite($fp, $msg, strlen($msg));
-
-                if (!$result) {
-                    Yii::error(sprintf('Message does not delivered to ' . $token));
-                } else {
-                    Yii::info('Message successfully delivered to ' . $token);
-                }
-            } catch (Exception $e) {
-                Yii::error($e);
+        try {
+            $msg = chr(0) . pack('n', 32) . pack('H*', $token) . pack('n', strlen($body)) . $body;
+            $result = fwrite($fp, $msg, strlen($msg));
+            if ($result) {
+                Yii::info($result);
+                $ret = true;
             }
+        } catch (Exception $e) {
+            Yii::error($e);
+            $ret = false;
         }
 
         fclose($fp);
+
+        return $ret;
     }
 }

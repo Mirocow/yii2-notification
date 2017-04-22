@@ -53,7 +53,17 @@ $ php ./yii migrate/up -p=@mirocow/notification/migrations
                   //'port' => 25,
                   'username' => '',
                   'password' => ''
-                ]
+                ],
+                'events' => [
+                  'frontend\controllers\SiteController' => [
+                    'Request',
+                    'Signup',
+                  ],
+                  'backend\controllers\deal\SiteController' => [
+                    'Login',
+                    'Confirm',
+                  ]
+                ]                
               ]
           ],
         ]
@@ -99,7 +109,32 @@ $event = new Notification(['params' => [
   'phone' => $user->phone_number,
   'notify' => ['growl', 'На Ваш email отправлено письмо для подтверждения'],
 ]]);
-Notification::trigger(self::className(),'actionSignup', $event);
+Notification::trigger(self::className(),'Signup', $event);
+```
+or full
+
+```php
+$notification = new Notification([
+  'from' => [\Yii::$app->params['supportEmail'] => \Yii::$app->name . ' robot'],
+  'to' => $deal['userSeller']['email'], // строка или массив
+  'toId' => $deal['userSeller']['id'], // строка или массив
+  'phone' => $deal['userSeller']['phone_number'], // строка или массив
+  'subject' => "\"{$deal['userBuyer']['nameForOut']}\" предлагает вам сделку для \"{$deal['ads']['product']->getName()}\"",
+  'token' => 'TOKEN',
+  'message' => "",
+  'params' => [
+    'productName' => $deal['ads']['product']->getName(),
+    'avatar' => $deal['userBuyer']->avatarFile,
+    'fromUserName' => $deal['userBuyer']['nameForOut'],
+  ],
+  'view' => ['html' => 'Request-html', 'text' => 'Request-text'],
+  'path' => '@common/mail/deal',
+  'notify' => ['growl', 'На Ваш email отправлено письмо для подтверждения'],
+  'callback' => function(Provider $provider, $status){
+    // Тут можно обработать ответ от провайдеров нотификаций
+  }
+]);
+Notification::trigger(self::className(),'Request', $notification);
 ```
 
 ## Run console
