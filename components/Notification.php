@@ -2,8 +2,8 @@
 
 namespace mirocow\notification\components;
 
-use yii\base\Event;
 use Yii;
+use yii\base\Event;
 
 /**
  * Class Notification
@@ -47,8 +47,9 @@ class Notification extends Event
     /** @var array  */
     public $params = [];
 
-    public function init()
-    {
-        $this->fromId = Yii::$app->user->identity->id;
+    public function init() {
+        if (!$this->fromId) {
+            $this->fromId = Yii::$app->user->identity->id;
+        }
     }
 }
