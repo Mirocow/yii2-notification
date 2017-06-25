@@ -6,6 +6,7 @@ use mirocow\notification\components\Notification;
 use mirocow\notification\components\Provider;
 use Yii;
 use yii\base\BootstrapInterface;
+use yii\base\InvalidParamException;
 
 class Module extends \yii\base\Module implements BootstrapInterface
 {
@@ -63,7 +64,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
                 /** @var Notification $params */
                 $provider->send($params);
             } else {
-                throw new \Exception();
+                throw new InvalidParamException("Wrong notification provider params");
             }
 
             if (is_callable($callback)) {
