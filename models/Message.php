@@ -13,6 +13,7 @@ use yii\helpers\Json;
  * @property integer $id
  * @property integer $from_id
  * @property integer $to_id
+ * @property string $event
  * @property string $title
  * @property string $message
  * @property string $params
@@ -39,6 +40,7 @@ class Message extends \yii\db\ActiveRecord
           [['message', 'params'], 'string'],
           [['update_at', 'create_at'], 'safe'],
           [['title'], 'string', 'max' => 255],
+          [['event'], 'string', 'max' => 100],
         ];
     }
 
@@ -51,6 +53,7 @@ class Message extends \yii\db\ActiveRecord
           'id' => 'ID',
           'from_id' => 'From Id',
           'to_id' => 'To Id',
+          'event' => 'Event name',
           'title' => 'Title',
           'message' => 'Message',
           'params' => 'Json params',
@@ -76,6 +79,7 @@ class Message extends \yii\db\ActiveRecord
      * @param array $params
      */
     public function setParams($params = []){
+        $params = ArrayHelper::merge($this->attributes, $params);
         $this->params = Json::encode($params);
     }
 
@@ -87,8 +91,6 @@ class Message extends \yii\db\ActiveRecord
         if(!$params){
             $params = [];
         }
-        $params = ArrayHelper::merge($params, $this->attributes);
-
         return $params;
     }
 
