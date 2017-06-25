@@ -58,7 +58,10 @@ class email extends Provider
             }
         }
 
-        $params = array_merge($notification->params, ['message' => $notification->message]);
+        $params = array_merge($notification->params, [
+          'subject' => $notification->subject,
+          'message' => $notification->message
+        ]);
 
         if (is_array($notification->to)) {
             $emails = $notification->to;
