@@ -41,12 +41,12 @@ class Notification extends Event
     /** @var array  */
     public $view = [];
 
-    /** @var \Closure */
-    public $callback = null;
-
     /** @var array  */
     public $params = [];
 
+    /**
+     *
+     */
     public function init() {
         if (!$this->fromId) {
             $this->fromId = Yii::$app->user->identity->id;

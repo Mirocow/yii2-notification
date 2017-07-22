@@ -77,6 +77,7 @@ class email extends Provider
                                      ->setSubject($notification->subject)
                                      ->send();
         }
+
     }
 
 }

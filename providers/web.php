@@ -37,6 +37,5 @@ class web  extends Provider
             $this->status[$toId] = $message->save();
         }
 
-        return true;
     }
 }

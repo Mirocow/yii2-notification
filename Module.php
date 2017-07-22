@@ -2,14 +2,18 @@
 
 namespace mirocow\notification;
 
+use mirocow\notification\components\JobEvent;
 use mirocow\notification\components\Notification;
 use mirocow\notification\components\Provider;
 use Yii;
 use yii\base\BootstrapInterface;
-use yii\base\InvalidParamException;
 
 class Module extends \yii\base\Module implements BootstrapInterface
 {
+    const EVENT_BEFORE_SEND = 'beforeSend';
+
+    const EVENT_AFTER_SEND = 'afterSend';
+
     public $controllerNamespace = 'mirocow\notification\controllers';
 
     public $providers = [];
@@ -36,41 +40,23 @@ class Module extends \yii\base\Module implements BootstrapInterface
         $provider = Yii::createObject($notification->data['provider']);
         if(!$provider) return;
 
+        $event = new JobEvent([
+          'provider' => $this->class_basename($provider),
+          'event' => $notification->name,
+          'params' => $notification,
+        ]);
+
+        $this->trigger(self::EVENT_BEFORE_SEND, $event);
+
+        if(!$event->isValid){
+            return;
+        }
+
         $provider->send($notification);
-        if (isset($notification->callback) && is_callable($notification->callback)) {
-            call_user_func_array($notification->callback, [$provider, $provider->status]);
-        }
-    }
 
-    /**
-     * @param $message
-     * @param null $callback
-     */
-    public function send($params = [], $callback = null)
-    {
-        foreach ($this->providers as $name => $provider) {
-            /** @var Provider $provider */
-            $provider = $this->provider($name);
-            if(!$provider) continue;
+        $event->status = $provider->status;
 
-            if(is_array($params)){
-                $notification = new Notification;
-                foreach ($params as $param => $value){
-                    if(!isset( $notification->{$param})) continue;
-                    $notification->{$param} = $value;
-                }
-                $provider->send($notification);
-            } elseif(is_a($params, 'Notification')){
-                /** @var Notification $params */
-                $provider->send($params);
-            } else {
-                throw new InvalidParamException("Wrong notification provider params");
-            }
-
-            if (is_callable($callback)) {
-                call_user_func_array($callback, [$params, $provider->status]);
-            }
-        }
+        $this->trigger(self::EVENT_AFTER_SEND, $event);
     }
 
     /**
@@ -97,6 +83,13 @@ class Module extends \yii\base\Module implements BootstrapInterface
                 Notification::on($className, $eventName, [$this, 'sendEvent'], ['provider' => $provider]);
             }
         }
+    }
+
+    function class_basename($class)
+    {
+        $class = is_object($class) ? get_class($class) : $class;
+
+        return basename(str_replace('\\', '/', $class));
     }
 
 }

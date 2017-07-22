@@ -21,5 +21,6 @@ class notify  extends Provider
         if(empty($notification->notify)) return;
 
         Yii::$app->session->addFlash($notification->notify[0], $notification->notify[1]);
+
     }
 }
