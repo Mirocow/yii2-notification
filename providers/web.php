@@ -26,7 +26,7 @@ class web  extends Provider
             $toIds = [$notification->toId];
         }
 
-        Yii::$app->db->open();
+        \Yii::$app->db->open();
         foreach ($toIds as $toId) {
             $message          = new Message();
             $message->from_id = $notification->fromId;
@@ -37,7 +37,7 @@ class web  extends Provider
             $message->setParams(ArrayHelper::merge(['event' => $notification->name], $notification->params));
             $this->status[$toId] = $message->save();
         }
-        Yii::$app->db->close();
+        \Yii::$app->db->close();
 
     }
 }
