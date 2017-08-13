@@ -25,9 +25,9 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public function bootstrap($app)
     {
-        foreach ($this->providers as $provider){
+        foreach ($this->providers as $providerName => $provider){
             if(empty($provider['events'])) continue;
-            $this->attachEvents($provider);
+            $this->attachEvents($providerName, $provider);
         }
     }
 
@@ -41,7 +41,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
         if(!$provider) return;
 
         $event = new JobEvent([
-          'provider' => $this->class_basename($provider),
+          'provider' => $notification->data['providerName'],
           'event' => $notification->name,
           'params' => $notification,
         ]);
@@ -76,11 +76,11 @@ class Module extends \yii\base\Module implements BootstrapInterface
     /**
      * @param $provider
      */
-    public function attachEvents($provider)
+    public function attachEvents($providerName, $provider)
     {
         foreach ($provider['events'] as $className => $events) {
             foreach ($events as $eventName) {
-                Notification::on($className, $eventName, [$this, 'sendEvent'], ['provider' => $provider]);
+                Notification::on($className, $eventName, [$this, 'sendEvent'], ['providerName' => $providerName, 'provider' => $provider]);
             }
         }
     }
