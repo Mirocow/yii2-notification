@@ -71,11 +71,13 @@ class email extends Provider
         }
 
         foreach ($emails as $email) {
-            $this->status[$email] = $mailer->compose($emailView, $params)
+            $status = $mailer->compose($emailView, $params)
                                      ->setFrom($from)
                                      ->setTo($email)
                                      ->setSubject($notification->subject)
                                      ->send();
+
+            $this->status[$email] = $status;
         }
 
     }

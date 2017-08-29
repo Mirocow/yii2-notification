@@ -44,7 +44,8 @@ class smsc extends Provider
 
         foreach ($phones as $phone){
             $result = $sms->send_sms($phone, $notification->subject);
-            $this->status[$phone] = $sms->isSuccess($result);
+            $status = $sms->isSuccess($result);
+            $this->status[$phone] = $status;
         }
 
     }

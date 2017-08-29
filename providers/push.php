@@ -8,8 +8,8 @@
 
 namespace mirocow\notification\providers;
 
-use mirocow\notification\components\Provider;
 use mirocow\notification\components\Notification;
+use mirocow\notification\components\Provider;
 use Yii;
 
 class push  extends Provider
@@ -30,17 +30,8 @@ class push  extends Provider
         }
 
         foreach ($tokens as $token){
-            $this->status[$token] = $push->ios()->send($token, [
-              //'custom-key' => 'custom-value',
-              /*'aps' => [
-                'alert' => [
-                  'loc-key' => 'i18n_key',
-                  'loc-args' => ['arg1'],
-                ]
-              ],*/
-              'badge' => 1,
-              'sound' => 'default'
-            ]);
+            $status = $push->ios()->send($token, $notification->push);
+            $this->status[$token] = $status;
         }
 
     }

@@ -11,38 +11,48 @@ use yii\base\Event;
  */
 class Notification extends Event
 {
-    /** @var int  */
+    /** @var int */
     public $fromId = 0;
 
-    /** @var array  */
+    /** @var array */
     public $toId = [];
 
-    /** @var array  */
+    /** @var array */
     public $from = [];
 
     /** @var array  */
     public $to = [];
 
-    /** @var array  */
+    /** @var array */
     public $phone = [];
 
     /** @var array  */
     public $token = [];
 
-    /** @var string  */
+    /** @var string */
     public $subject = '';
 
-    /** @var string  */
+    /** @var string */
     public $message = '';
 
-    /** @var string  */
+    /** @var string */
     public $path = '';
 
-    /** @var array  */
+    /** @var array */
     public $view = [];
 
-    /** @var array  */
+    /** @var array */
     public $params = [];
+
+    /** @var array */
+    public $push = [
+      'aps' => [
+        'alert' => 'Hi',
+        'badge' => 1,
+        'sound' => 'default',
+        "link_url" => "https://google.com"
+      ],
+    ];
 
     /**
      *
