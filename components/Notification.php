@@ -12,7 +12,7 @@ use yii\base\Event;
 class Notification extends Event
 {
     /** @var int */
-    public $fromId = 0;
+    public $fromId;
 
     /** @var array */
     public $toId = [];
@@ -58,7 +58,7 @@ class Notification extends Event
      *
      */
     public function init() {
-        if (!$this->fromId) {
+        if (!isset($this->fromId)) {
             $this->fromId = Yii::$app->user->identity->id;
         }
     }
