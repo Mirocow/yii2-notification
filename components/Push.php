@@ -240,6 +240,15 @@ class Push extends Component
             throw new InvalidConfigException('Apns in not enabled.');
         }
 
+        if (is_array($body)) {
+            $body = Json::encode($body);
+        }
+
+        if(strlen($body) > 256){
+            Yii::error("Send message is to long");
+            return false;
+        }
+
         $path = sprintf('tls://gateway%s.push.apple.com:2195', ArrayHelper::getValue($this->apnsConfig, 'environment'));
         $this->ctx = stream_context_create();
         stream_context_set_option($this->ctx, 'ssl', 'local_cert', ArrayHelper::getValue($this->apnsConfig, 'pem'));
@@ -255,19 +264,22 @@ class Push extends Component
             return false;
         }
 
-        if (is_array($body)) {
-            $body = Json::encode($body);
-        }
+        stream_set_blocking($fp, 0);
 
         $ret = false;
 
         try {
             $msg = chr(0) . pack('n', 32) . pack('H*', $token) . pack('n', strlen($body)) . $body;
-            $result = fwrite($fp, $msg, strlen($msg));
-            if ($result) {
-                Yii::info($result);
+            $writtenBytes = fwrite($fp, $msg, strlen($msg));
+
+            if($writtenBytes === false){
+                Yii::error("An error occurred while the data on the server");
+                $ret = false;
+            } elseif ($writtenBytes > 0) {
+                Yii::info("Copied $writtenBytes bytes to server.");
                 $ret = true;
             }
+
         } catch (Exception $e) {
             Yii::error($e);
             $ret = false;
