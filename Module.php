@@ -52,7 +52,12 @@ class Module extends \yii\base\Module implements BootstrapInterface
             return;
         }
 
-        $provider->send($notification);
+        try {
+            $provider->send($notification);
+        } catch (\Exception $e){
+            \Yii::error($e, __METHOD__);
+            throw $e;
+        }
 
         $event->status = $provider->status;
 
