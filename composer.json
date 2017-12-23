@@ -24,7 +24,7 @@
         "yiisoft/yii2-codeception": "*"
     },
     "suggest": {
-        "mirocow/yii2-queue": "to use Queue server",
+        "mirocow/yii2-queue": "to use Queue server"
     },
     "autoload": {
         "psr-4": {
