@@ -75,6 +75,8 @@ $ php ./yii migrate/up -p=@mirocow/notification/migrations
 ### By method send
 
 ```php
+use mirocow\notification\components\Notification;
+
     $email = [
       'to' => 'notification@mirocow.com
       //'from_name' => '',
@@ -82,16 +84,31 @@ $ php ./yii migrate/up -p=@mirocow/notification/migrations
       'message' => '<h1>Content example</h1>'
     ];
     
-    /* @var Notification $notification */
-    $notification = Yii::$app->getModule('notification');    
+    /* @var \mirocow\notification\Module $sender */
+    $sender = Yii::$app->getModule('notification');
     
-    $notification->send($email, function ($mail, $status) use (&$errors) {
-
-        $errors[] = Yii::t('core', 'Email {mail} sent', [
-          'mail' => $mail['to']
-        ]);
-
-    });
+    $notification = new Notification([
+      'from' => [\Yii::$app->params['supportEmail'] => \Yii::$app->name . ' robot'],
+      'to' => $deal['userSeller']['email'], // строка или массив
+      'toId' => $deal['userSeller']['id'], // строка или массив
+      'phone' => $deal['userSeller']['phone_number'], // строка или массив
+      'subject' => "\"{$deal['userBuyer']['nameForOut']}\" предлагает вам сделку для \"{$deal['ads']['product']->getName()}\"",
+      'token' => 'TOKEN',
+      'message' => "",
+      'params' => [
+        'productName' => $deal['ads']['product']->getName(),
+        'avatar' => $deal['userBuyer']->avatarFile,
+        'fromUserName' => $deal['userBuyer']['nameForOut'],
+      ],
+      'view' => ['html' => 'Request-html', 'text' => 'Request-text'],
+      'path' => '@common/mail/deal',
+      'notify' => ['growl', 'На Ваш email отправлено письмо для подтверждения'],
+      'callback' => function(Provider $provider, $status){
+        // Тут можно обработать ответ от провайдеров нотификаций
+      }
+    ]);
+           
+    $sender->sendEvent($notifacation);
 ```
 
 ### By Event
@@ -111,6 +128,7 @@ $event = new Notification(['params' => [
 ]]);
 Notification::trigger(self::className(),'Signup', $event);
 ```
+
 or full
 
 ```php
@@ -137,8 +155,4 @@ $notification = new Notification([
 Notification::trigger(self::className(),'Request', $notification);
 ```
 
-## Run console
-
-```php
-php ./yii notification/cron/send
-```               
+### With mirocow/yii2-queue             

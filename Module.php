@@ -5,8 +5,11 @@ namespace mirocow\notification;
 use mirocow\notification\components\JobEvent;
 use mirocow\notification\components\Notification;
 use mirocow\notification\components\Provider;
+use mirocow\notification\models\NotificationStatus;
 use Yii;
 use yii\base\BootstrapInterface;
+use yii\db\Expression;
+use yii\helpers\Json;
 
 class Module extends \yii\base\Module implements BootstrapInterface
 {
@@ -53,7 +56,10 @@ class Module extends \yii\base\Module implements BootstrapInterface
         }
 
         try {
+
+            $this->setProviderStatus($notification);
             $provider->send($notification);
+            $this->setProviderStatus($notification, $provider->status);
             $event->status = $provider->status;
             $this->trigger(self::EVENT_AFTER_SEND, $event);
         } catch (\Exception $e){
@@ -93,6 +99,36 @@ class Module extends \yii\base\Module implements BootstrapInterface
         $class = is_object($class) ? get_class($class) : $class;
 
         return basename(str_replace('\\', '/', $class));
+    }
+
+    private function setProviderStatus(Notification $notification, $ret = null)
+    {
+        $providerName = $notification->data['providerName'];
+
+        $event = $notification->name;
+
+        /** @var NotificationStatus $status */
+        $status = NotificationStatus::find()
+            ->where(
+                [
+                    'provider' => $providerName,
+                    'event' => $event,
+                    //'status' => null,
+                    'update_at' => null,
+                ]
+            )
+            ->one();
+        if (!$status) {
+            $status = new NotificationStatus;
+            $status->provider = $providerName;
+            $status->event = $event;
+            $status->params = Json::encode($notification->getAttributes());
+        } else {
+            $status->update_at = new Expression('CURRENT_TIMESTAMP');
+            $status->status = Json::encode($ret);
+        }
+
+        $status->save();
     }
 
 }

@@ -20,6 +20,8 @@ class web  extends Provider
      */
     public function send(Notification $notification)
     {
+        if(empty($notification->toId)) return;
+
         if(is_array($notification->toId)){
             $toIds = $notification->toId;
         } else {

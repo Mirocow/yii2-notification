@@ -39,6 +39,12 @@ class Notification extends Event
     public $path = '';
 
     /** @var array */
+    public $layouts = [
+        'text' => '@common/mail/layouts/text',
+        'html' => '@common/mail/layouts/html',
+    ];
+
+    /** @var array */
     public $view = [];
 
     /** @var array */
@@ -61,5 +67,22 @@ class Notification extends Event
         if (!isset($this->fromId)) {
             $this->fromId = Yii::$app->user->identity->id;
         }
+    }
+
+    /**
+     * @return \ReflectionProperty[]
+     */
+    public function getAttributes()
+    {
+        $properties = [];
+
+        $reflect = new \ReflectionClass($this);
+        $props = $reflect->getProperties(\ReflectionProperty::IS_PUBLIC);
+
+        foreach ($props as $prop) {
+            $properties[$prop->name] = $this->{$prop->name};
+        }
+
+        return $properties;
     }
 }

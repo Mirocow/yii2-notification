@@ -15,7 +15,15 @@ class email extends Provider
 {
     public $emailViewPath = '@mirocow/notification/tpl';
 
-    public $emailView = 'email-base.tpl.php';
+    public $layouts = [
+        'text' => '@common/mail/layouts/text',
+        'html' => '@common/mail/layouts/html',
+    ];
+
+    public $views = [
+        'text' => 'email-base.text.tpl.php',
+        'html' => 'email-base.html.tpl.php',
+    ];
 
     public $config = [
         'mailer' => [],
@@ -45,8 +53,6 @@ class email extends Provider
 
         $mailer->viewPath = isset($notification->path) ? $notification->path : $this->emailViewPath;
 
-        $emailView = isset($notification->view) ? $notification->view : $this->emailView;
-
         if(isset($notification->from)){
             $from = $notification->from;
         }else {
@@ -63,6 +69,16 @@ class email extends Provider
           'message' => $notification->message
         ]);
 
+        if(isset($this->layouts['text'])){
+            $mailer->textLayout = $this->layouts['text'];
+        }
+
+        if(isset($this->layouts['html'])){
+            $mailer->htmlLayout = $this->layouts['html'];
+        }
+
+        $views = isset($notification->view) ? $notification->view : $this->views;
+
         if (is_array($notification->to)) {
             $emails = $notification->to;
         }
@@ -71,7 +87,7 @@ class email extends Provider
         }
 
         foreach ($emails as $email) {
-            $status = $mailer->compose($emailView, $params)
+            $status = $mailer->compose($views, $params)
                                      ->setFrom($from)
                                      ->setTo($email)
                                      ->setSubject($notification->subject)
