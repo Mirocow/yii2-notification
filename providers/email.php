@@ -51,6 +51,8 @@ class email extends Provider
             throw new Exception();
         }
 
+        $mailer->view->params['notification'] = $notification;
+
         $mailer->viewPath = isset($notification->path) ? $notification->path : $this->emailViewPath;
 
         if(isset($notification->from)){
