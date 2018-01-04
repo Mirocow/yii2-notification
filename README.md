@@ -29,31 +29,10 @@ $ php ./yii migrate/up -p=@mirocow/notification/migrations
                 ]
               ],
 
-              // Redis
-              'mailQueue' => [
-                'class' => 'mirocow\notification\providers\mailQueue',
-                'debug' => true,
-                'queue_name' => 'emails_queue',
-                'config' => [
-                  'hostname' => 'localhost',
-                  'port' => 6379,
-                  //'password' => '',
-                  'database' => 0,
-                ]
-              ],
-
               // E-mail
               'email' => [
                 'class' => 'mirocow\notification\providers\email',
-                'config' => [
-                  'from' => ['request@myhost.com' => 'My host.com'],
-                  'class' => 'Swift_SmtpTransport',
-                  'charset' => 'utf-8',
-                  'host' => '',
-                  //'port' => 25,
-                  'username' => '',
-                  'password' => ''
-                ],
+                'emailViewPath' => '@common/mail',
                 'events' => [
                   'frontend\controllers\SiteController' => [
                     'Request',
