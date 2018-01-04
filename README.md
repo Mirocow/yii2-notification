@@ -55,13 +55,6 @@ $ php ./yii migrate/up -p=@mirocow/notification/migrations
 
 ```php
 use mirocow\notification\components\Notification;
-
-    $email = [
-      'to' => 'notification@mirocow.com
-      //'from_name' => '',
-      'subject' => 'Subject example
-      'message' => '<h1>Content example</h1>'
-    ];
     
     /* @var \mirocow\notification\Module $sender */
     $sender = Yii::$app->getModule('notification');
@@ -87,7 +80,7 @@ use mirocow\notification\components\Notification;
       }
     ]);
            
-    $sender->sendEvent($notifacation);
+    $sender->sendEvent($notification);
 ```
 
 ### By Event
