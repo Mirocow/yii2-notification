@@ -71,11 +71,17 @@ class email extends Provider
           'message' => $notification->message
         ]);
 
-        if(isset($this->layouts['text'])){
+        if(isset($notification->layouts['text'])){
+            $mailer->textLayout = $notification->layouts['text'];
+        }
+        elseif(isset($this->layouts['text'])){
             $mailer->textLayout = $this->layouts['text'];
         }
 
-        if(isset($this->layouts['html'])){
+        if(isset($notification->layouts['html'])){
+            $mailer->htmlLayout = $notification->layouts['html'];
+        }
+        elseif(isset($this->layouts['html'])){
             $mailer->htmlLayout = $this->layouts['html'];
         }
 
