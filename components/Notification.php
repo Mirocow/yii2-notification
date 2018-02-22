@@ -59,6 +59,17 @@ class Notification extends Event
         "link_url" => "https://google.com"
       ],
     ];
+    
+    /**
+     * 
+     */
+    public function init() {
+        if(!\Yii::$app->request->isConsoleRequest) {
+            if (!isset($this->fromId)) {
+                $this->fromId = Yii::$app->user->identity->id;
+            }
+        }
+    }    
 
     /**
      * @return \ReflectionProperty[]
