@@ -61,15 +61,6 @@ class Notification extends Event
     ];
 
     /**
-     *
-     */
-    public function init() {
-        if (!isset($this->fromId)) {
-            $this->fromId = Yii::$app->user->identity->id;
-        }
-    }
-
-    /**
      * @return \ReflectionProperty[]
      */
     public function getAttributes()
