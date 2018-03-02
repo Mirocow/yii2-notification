@@ -44,9 +44,9 @@ class Module extends \yii\base\Module implements BootstrapInterface
         if(!$provider) return;
 
         $event = new JobEvent([
-          'provider' => $notification->data['providerName'],
-          'event' => $notification->name,
-          'params' => $notification,
+            'provider' => $notification->data['providerName'],
+            'event' => $notification->name,
+            'params' => $notification,
         ]);
 
         $this->trigger(self::EVENT_BEFORE_SEND, $event);
@@ -56,13 +56,17 @@ class Module extends \yii\base\Module implements BootstrapInterface
         }
 
         try {
-
             $this->setProviderStatus($notification);
             $provider->send($notification);
-            $this->setProviderStatus($notification, $provider->status);
+            if($provider->status) {
+                $this->setProviderStatus($notification, $provider->status);
+            } else {
+                $this->setProviderStatus($notification, 'Dont worked');
+            }
             $event->status = $provider->status;
             $this->trigger(self::EVENT_AFTER_SEND, $event);
         } catch (\Exception $e){
+            $this->setProviderStatus($notification, $e->getMessage());
             \Yii::error($e, __METHOD__);
             throw $e;
         }
