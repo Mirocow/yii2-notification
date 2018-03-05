@@ -55,7 +55,7 @@ class email extends Provider
 
         $mailer->viewPath = isset($notification->path) ? $notification->path : $this->emailViewPath;
 
-        if(isset($notification->from)){
+        if(!empty($notification->from)){
             $from = $notification->from;
         }else {
             if (isset($this->config['from'])) {
