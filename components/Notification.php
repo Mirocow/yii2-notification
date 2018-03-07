@@ -12,7 +12,7 @@ use yii\base\Event;
 class Notification extends Event
 {
     /** @var int */
-    public $fromId;
+    public $fromId = null;
 
     /** @var array */
     public $toId = [];

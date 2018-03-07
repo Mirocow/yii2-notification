@@ -33,7 +33,8 @@ class NotificationStatus extends \yii\db\ActiveRecord
         return [
             [['params'], 'string'],
             [['update_at', 'create_at'], 'safe'],
-            [['provider', 'event', 'status'], 'string', 'max' => 255],
+            [['provider', 'event'], 'string', 'max' => 255],
+            [['status'], 'string'],
         ];
     }
 

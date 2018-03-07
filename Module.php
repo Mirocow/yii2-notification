@@ -56,17 +56,17 @@ class Module extends \yii\base\Module implements BootstrapInterface
         }
 
         try {
-            $this->setProviderStatus($notification);
+            $statusId = $this->setProviderStatus($notification);
             $provider->send($notification);
             if(!empty($provider->status)) {
-                $this->setProviderStatus($notification, $provider->status);
+                $this->setProviderStatus($notification, $statusId, $provider->status);
             } else {
-                $this->setProviderStatus($notification, 'Dont worked');
+                $this->setProviderStatus($notification, $statusId, 'Dont worked');
             }
             $event->status = $provider->status;
             $this->trigger(self::EVENT_AFTER_SEND, $event);
         } catch (\Exception $e){
-            $this->setProviderStatus($notification, $e->getMessage());
+            $this->setProviderStatus($notification, $statusId, $e->getMessage());
             \Yii::error($e, __METHOD__);
             throw $e;
         }
@@ -98,6 +98,10 @@ class Module extends \yii\base\Module implements BootstrapInterface
         }
     }
 
+    /**
+     * @param $class
+     * @return string
+     */
     function class_basename($class)
     {
         $class = is_object($class) ? get_class($class) : $class;
@@ -105,33 +109,26 @@ class Module extends \yii\base\Module implements BootstrapInterface
         return basename(str_replace('\\', '/', $class));
     }
 
-    private function setProviderStatus(Notification $notification, $ret = null)
+    private function setProviderStatus(Notification &$notification, $statusId = null, $ret = null)
     {
         $providerName = $notification->data['providerName'];
-
         $event = $notification->name;
 
-        /** @var NotificationStatus $status */
-        $status = NotificationStatus::find()
-            ->where(
-                [
-                    'provider' => $providerName,
-                    'event' => $event,
-                    'update_at' => null,
-                ]
-            )
-            ->one();
-        if (!$status) {
+        if (!$statusId) {
             $status = new NotificationStatus;
             $status->provider = $providerName;
             $status->event = $event;
             $status->params = Json::encode($notification->getAttributes());
         } else {
+            /** @var NotificationStatus $status */
+            $status = NotificationStatus::findOne($statusId);
             $status->update_at = new Expression('CURRENT_TIMESTAMP');
             $status->status = Json::encode($ret);
         }
 
         $status->save();
+
+        return $status->id;
     }
 
 }
