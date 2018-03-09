@@ -71,7 +71,7 @@ class Notification extends Event
                 $this->from = [\Yii::$app->params['supportEmail'] => \Yii::$app->name];
                 $this->fromId = 0;
             } else {
-                throw new Exception("Sender object not found");
+                throw new Exception("Sender email not found");
             }
         }
         if (empty($this->fromId)) {
