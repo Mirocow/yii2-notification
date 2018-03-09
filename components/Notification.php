@@ -4,6 +4,7 @@ namespace mirocow\notification\components;
 
 use Yii;
 use yii\base\Event;
+use yii\base\Exception;
 
 /**
  * Class Notification
@@ -59,17 +60,24 @@ class Notification extends Event
         "link_url" => "https://google.com"
       ],
     ];
-    
+
     /**
-     * 
+     * @throws Exception
      */
-    public function init() {
-        if(!\Yii::$app->request->isConsoleRequest) {
-            if (!isset($this->fromId)) {
-                $this->fromId = Yii::$app->user->identity->id;
+    public function init()
+    {
+        if (empty($this->from)) {
+            if (!empty(\Yii::$app->params['supportEmail'])) {
+                $this->from = [\Yii::$app->params['supportEmail'] => \Yii::$app->name];
+                $this->fromId = 0;
+            } else {
+                throw new Exception("Sender object not found");
             }
         }
-    }    
+        if (empty($this->fromId)) {
+            throw new Exception("Sender ID not found");
+        }
+    }
 
     /**
      * @return \ReflectionProperty[]
