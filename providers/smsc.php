@@ -48,6 +48,8 @@ class smsc extends Provider
             $this->status[$phone] = $status;
         }
 
+        unset($sms);
+
     }
 
 }

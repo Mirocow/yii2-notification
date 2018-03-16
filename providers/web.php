@@ -38,6 +38,7 @@ class web  extends Provider
             $message->message = $notification->message;
             $message->setParams(ArrayHelper::merge(['event' => $notification->name], $notification->params));
             $status = $message->save();
+            unset($message);
             $this->status[$toId] = $status;
         }
         \Yii::$app->db->close();

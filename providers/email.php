@@ -104,6 +104,7 @@ class email extends Provider
             $this->status[$email] = $status;
         }
 
+        unset($mailer);
     }
 
 }

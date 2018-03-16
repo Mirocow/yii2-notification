@@ -35,5 +35,6 @@ class push  extends Provider
             $this->status[$token] = $status;
         }
 
+        unset($push);
     }
 }

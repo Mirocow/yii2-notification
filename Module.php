@@ -65,6 +65,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
             }
             $event->status = $provider->status;
             $this->trigger(self::EVENT_AFTER_SEND, $event);
+            unset($provider, $event);
         } catch (\Exception $e){
             $this->setProviderStatus($notification, $statusId, $e->getMessage());
             if(YII_DEBUG) {
