@@ -41,7 +41,9 @@ class Module extends \yii\base\Module implements BootstrapInterface
     {
         /** @var Provider $provider */
         $provider = Yii::createObject($notification->data['provider']);
-        if(!$provider) return;
+        if(!$provider || !$provider->enabled){
+            return;
+        }
 
         $event = new JobEvent([
             'provider' => $notification->data['providerName'],

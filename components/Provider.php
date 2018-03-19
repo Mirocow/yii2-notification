@@ -16,6 +16,9 @@ abstract class Provider extends \yii\base\Component
     /** @var string|array */
     public $status = [];
 
+    /** @var bool */
+    public $enabled = true;
+
     public function send(Notification $notification){
         throw new Exception('Not found notification handler');
     }
