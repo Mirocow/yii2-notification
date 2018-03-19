@@ -60,11 +60,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
         try {
             $statusId = $this->setProviderStatus($notification);
             $provider->send($notification);
-            if(!empty($provider->status)) {
-                $this->setProviderStatus($notification, $statusId, $provider->status);
-            } else {
-                $this->setProviderStatus($notification, $statusId, 'Dont worked');
-            }
+            $this->setProviderStatus($notification, $statusId, $provider->status);
             $event->status = $provider->status;
             $this->trigger(self::EVENT_AFTER_SEND, $event);
             unset($provider, $event);
