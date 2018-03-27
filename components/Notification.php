@@ -74,7 +74,7 @@ class Notification extends Event
                 throw new Exception("Sender email not found");
             }
         }
-        if (empty($this->fromId)) {
+        if (!isset($this->fromId)) {
             throw new Exception("Sender ID not found");
         }
     }
