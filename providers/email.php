@@ -88,7 +88,12 @@ class email extends Provider
         $views = isset($notification->view) ? $notification->view : $this->views;
 
         if (is_array($notification->to)) {
-            $emails = $notification->to;
+            if(is_array(reset($notification->to))){
+                $emails = $notification->to;
+            } else {
+                // like [email => userName]
+                $emails = [$notification->to];
+            }
         }
         else {
             $emails = [$notification->to];
@@ -100,6 +105,10 @@ class email extends Provider
                                      ->setTo($email)
                                      ->setSubject($notification->subject)
                                      ->send();
+
+            if(is_array($email)){
+                $email = key($email);
+            }
 
             $this->status[$email] = $status;
         }
