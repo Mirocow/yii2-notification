@@ -100,14 +100,18 @@ class email extends Provider
         }
 
         foreach ($emails as $email) {
-            $status = $mailer->compose($views, $params)
-                                     ->setFrom($from)
-                                     ->setTo($email)
-                                     ->setSubject($notification->subject)
-                                     ->send();
+            try {
+                $status = $mailer->compose($views, $params)
+                    ->setFrom($from)
+                    ->setTo($email)
+                    ->setSubject($notification->subject)
+                    ->send();
 
-            if(is_array($email)){
-                $email = key($email);
+                if (is_array($email)) {
+                    $email = key($email);
+                }
+            } catch (\Exception $e){
+                $status = $e->getMessage();
             }
 
             $this->status[$email] = $status;

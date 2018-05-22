@@ -30,15 +30,20 @@ class web  extends Provider
 
         \Yii::$app->db->open();
         foreach ($toIds as $toId) {
-            $message          = new Message();
-            $message->from_id = $notification->fromId;
-            $message->to_id   = $toId;
-            $message->event = $notification->name;
-            $message->title   = $notification->subject;
-            $message->message = $notification->message;
-            $message->setParams(ArrayHelper::merge(['event' => $notification->name], $notification->params));
-            $status = $message->save();
-            unset($message);
+            try {
+                $message          = new Message();
+                $message->from_id = $notification->fromId;
+                $message->to_id   = $toId;
+                $message->event = $notification->name;
+                $message->title   = $notification->subject;
+                $message->message = $notification->message;
+                $message->setParams(ArrayHelper::merge(['event' => $notification->name], $notification->params));
+                $status = $message->save();
+                unset($message);
+            } catch (\Exception $e){
+                $status = $e->getMessage();
+            }
+
             $this->status[$toId] = $status;
         }
         \Yii::$app->db->close();

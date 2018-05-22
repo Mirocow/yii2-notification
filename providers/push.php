@@ -31,7 +31,12 @@ class push  extends Provider
         }
 
         foreach ($tokens as $token){
-            $status = $push->ios()->send($token, $notification->push);
+            try {
+                $status = $push->ios()->send($token, $notification->push);
+            } catch (\Exception $e){
+                $status = $e->getMessage();
+            }
+
             $this->status[$token] = $status;
         }
 
