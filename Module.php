@@ -19,6 +19,8 @@ class Module extends \yii\base\Module implements BootstrapInterface
 
     public $controllerNamespace = 'mirocow\notification\controllers';
 
+    public $storeNotificationStatus = false;
+
     public $providers = [];
 
     private $_providers = [];
@@ -57,20 +59,11 @@ class Module extends \yii\base\Module implements BootstrapInterface
             return;
         }
 
-        try {
-            $statusId = $this->setProviderStatus($notification);
-            $provider->send($notification);
-            $this->setProviderStatus($notification, $statusId, $provider->status);
-            $event->status = $provider->status;
-            $this->trigger(self::EVENT_AFTER_SEND, $event);
-            unset($provider, $event);
-        } catch (\Exception $e){
-            $this->setProviderStatus($notification, $statusId, $e->getMessage());
-            if(YII_DEBUG) {
-                \Yii::error($e, __METHOD__);
-            }
-            throw $e;
-        }
+        $statusId = $this->setProviderStatus($notification);
+        $provider->send($notification);
+        $this->setProviderStatus($notification, $statusId, $provider->status);
+        $event->status = $provider->status;
+        $this->trigger(self::EVENT_AFTER_SEND, $event);
     }
 
     /**
@@ -112,6 +105,10 @@ class Module extends \yii\base\Module implements BootstrapInterface
 
     private function setProviderStatus(Notification &$notification, $statusId = null, $ret = null)
     {
+        if(!$this->storeNotificationStatus){
+            return;
+        }
+
         $providerName = $notification->data['providerName'];
         $event = $notification->name;
 
