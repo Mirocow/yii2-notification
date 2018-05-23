@@ -59,11 +59,11 @@ class Module extends \yii\base\Module implements BootstrapInterface
             return;
         }
 
-        $statusId = $this->setProviderStatus($notification);
         $provider->send($notification);
-        $this->setProviderStatus($notification, $statusId, $provider->status);
+        $this->setProviderStatus($notification, $provider->status);
         $event->status = $provider->status;
         $this->trigger(self::EVENT_AFTER_SEND, $event);
+        unset($provider, $event);
     }
 
     /**
@@ -103,27 +103,19 @@ class Module extends \yii\base\Module implements BootstrapInterface
         return basename(str_replace('\\', '/', $class));
     }
 
-    private function setProviderStatus(Notification &$notification, $statusId = null, $ret = null)
+    private function setProviderStatus(Notification &$notification, $ret = null)
     {
         if(!$this->storeNotificationStatus){
             return;
         }
 
         $providerName = $notification->data['providerName'];
-        $event = $notification->name;
-
-        if (!$statusId) {
-            $status = new NotificationStatus;
-            $status->provider = $providerName;
-            $status->event = $event;
-            $status->params = Json::encode($notification->getAttributes());
-        } else {
-            /** @var NotificationStatus $status */
-            $status = NotificationStatus::findOne($statusId);
-            $status->update_at = new Expression('CURRENT_TIMESTAMP');
-            $status->status = Json::encode($ret);
-        }
-
+        $status = new NotificationStatus;
+        $status->provider = $providerName;
+        $status->event = $notification->name;
+        $status->params = Json::encode($notification->getAttributes());
+        $status->update_at = new Expression('CURRENT_TIMESTAMP');
+        $status->status = Json::encode($ret);
         $status->save();
 
         return $status->id;
