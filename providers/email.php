@@ -106,15 +106,17 @@ class email extends Provider
                     ->setTo($email)
                     ->setSubject($notification->subject)
                     ->send();
-
-                if (is_array($email)) {
-                    $email = key($email);
-                }
             } catch (\Exception $e){
                 $status = $e->getMessage();
             }
 
-            $this->status[$email] = $status;
+            if (is_array($email)) {
+                foreach ($email as $_email) {
+                    $this->status[$_email] = $status;
+                }
+            } else {
+                $this->status[$email] = $status;
+            }
         }
 
         unset($mailer);
