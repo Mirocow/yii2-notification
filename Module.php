@@ -8,6 +8,7 @@ use mirocow\notification\components\Provider;
 use mirocow\notification\models\NotificationStatus;
 use Yii;
 use yii\base\BootstrapInterface;
+use yii\base\Exception;
 use yii\db\Expression;
 use yii\helpers\Json;
 
@@ -41,8 +42,15 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public function sendEvent(Notification $notification)
     {
+        if(isset($notification->data['provider'])) {
+            $provider = Yii::createObject($notification->data[ 'provider' ]);
+        } elseif(isset($notification->data['providerName'])) {
+            $provider = $this->provider($notification->data['providerName']);
+        } else {
+            throw new Exception(Yii::t('app', 'Provider not found'));
+        }
+
         /** @var Provider $provider */
-        $provider = Yii::createObject($notification->data['provider']);
         if(!$provider || !$provider->enabled){
             return;
         }
