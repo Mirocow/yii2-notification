@@ -51,6 +51,11 @@ class email extends Provider
             throw new Exception();
         }
 
+        if (!empty($this->config['view'])) {
+            $mailer->setView($this->config['view']);
+            $mailer->getView();
+        }
+
         $mailer->view->params['notification'] = $notification;
 
         $mailer->viewPath = isset($notification->path) ? $notification->path : $this->emailViewPath;
@@ -85,7 +90,13 @@ class email extends Provider
             $mailer->htmlLayout = $this->layouts['html'];
         }
 
-        $views = isset($notification->view) ? $notification->view : $this->views;
+        if($notification->TextBody){
+            $mailer->setTextBody($notification->TextBody);
+        }
+
+        if($notification->HtmlBody){
+            $mailer->setHtmlBody($notification->HtmlBody);
+        }
 
         if (is_array($notification->to)) {
             if(is_array(reset($notification->to))){
@@ -98,6 +109,8 @@ class email extends Provider
         else {
             $emails = [$notification->to];
         }
+
+        $views = isset($notification->view) ? $notification->view : $this->views;
 
         foreach ($emails as $email) {
             try {

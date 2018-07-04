@@ -48,6 +48,12 @@ class Notification extends Event
     /** @var array */
     public $view = [];
 
+    /** @var string  */
+    public $TextBody = '';
+
+    /** @var string  */
+    public $HtmlBody = '';
+
     /** @var array */
     public $params = [];
 
@@ -60,6 +66,18 @@ class Notification extends Event
         "link_url" => "https://google.com"
       ],
     ];
+
+    public function __construct($config = [])
+    {
+        if (!empty($config)) {
+            foreach ($config as $name => $value) {
+                if(property_exists($this, $name)) {
+                    $this->{$name} = $value;
+                }
+            }
+        }
+        $this->init();
+    }
 
     /**
      * @throws Exception
