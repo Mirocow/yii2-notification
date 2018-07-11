@@ -33,6 +33,9 @@ class Notification extends Event
     /** @var string */
     public $subject = '';
 
+    /** @var string  */
+    public $notify = '';
+
     /** @var string */
     public $message = '';
 
@@ -92,8 +95,9 @@ class Notification extends Event
                 throw new Exception("Sender email not found");
             }
         }
-        if (!isset($this->fromId)) {
-            throw new Exception("Sender ID not found");
+
+        if(!$this->notify){
+            $this->notify = ['growl', $this->subject];
         }
     }
 

@@ -22,5 +22,7 @@ class notify  extends Provider
 
         Yii::$app->session->addFlash($notification->notify[0], $notification->notify[1]);
 
+        $this->status = true;
+
     }
 }

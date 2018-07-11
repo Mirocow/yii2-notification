@@ -128,3 +128,23 @@ Notification::trigger(self::className(),'Request', $notification);
 ```
 
 ### With mirocow/yii2-queue             
+
+```php
+    \Yii::$app->queue->getChannel()->push(new MessageModel([
+        'worker' => 'notification',
+        'method' => 'action',
+        'arguments' => [
+            'triggerClass' => self::class,
+            'methodName' => 'Subscribe',
+            'arguments' => [
+                'param' => 'value'
+            ],
+        ],
+    ]), 30);
+```
+
+## Tests
+
+```bash
+$ ./vendor/bin/codecept -c ./vendor/mirocow/yii2-notification run unit
+```
