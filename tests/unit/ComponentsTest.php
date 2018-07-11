@@ -14,24 +14,20 @@ class ComponentsTest extends \Codeception\Test\Unit
 
     protected $notification;
 
+    protected $checkEvent = false;
+
     protected function _before()
     {
         /* @var \common\modules\notification\Module $notification */
         $this->notification = \Yii::$app->getModule('notification');
 
         $this->notification->on(Module::EVENT_BEFORE_SEND, function (JobEvent $event){
-            $event->isValid = true;
-            $fileName = Yii::getAlias('@runtime/test-event.lock');
-            file_put_contents($fileName, '');
+            $this->checkEvent = true;
         });
     }
 
     protected function _after()
     {
-        foreach (glob(Yii::getAlias("@runtime/test-*.lock")) as $fileName) {
-            unlink($fileName);
-        }
-
         \Yii::$app->db->createCommand()->truncateTable('notification_status')->execute();
     }
 
@@ -58,9 +54,7 @@ class ComponentsTest extends \Codeception\Test\Unit
             ],
         ];
         $this->notification->sendEvent(new Notification($data));
-        $file = Yii::getAlias('@runtime/test-event.lock');
-        $this->assertFileExists($file);
-        @unlink($file);
+        $this->assertNotFalse($this->checkEvent);
     }
 
     public function testCheckStatus()

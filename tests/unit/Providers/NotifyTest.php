@@ -17,6 +17,7 @@ class NotifyTest extends \Codeception\Test\Unit
 
     protected function _after()
     {
+        \Yii::$app->db->createCommand()->truncateTable('notification_status')->execute();
     }
 
     // tests
@@ -44,8 +45,6 @@ class NotifyTest extends \Codeception\Test\Unit
             ],
         ];
         $notification->sendEvent(new Notification($data));
-        //$provider = $notification->provider('notify');
         $this->assertNotEmpty(Yii::$app->session->getAllFlashes());
-        //$this->assertNotEmpty($provider->status);
     }
 }

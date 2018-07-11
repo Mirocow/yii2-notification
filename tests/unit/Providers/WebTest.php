@@ -19,6 +19,7 @@ class WebTest extends \Codeception\Test\Unit
     protected function _after()
     {
         \Yii::$app->db->createCommand()->truncateTable('notification')->execute();
+        \Yii::$app->db->createCommand()->truncateTable('notification_status')->execute();
     }
 
     // tests
@@ -47,6 +48,6 @@ class WebTest extends \Codeception\Test\Unit
             ],
         ];
         $notification->sendEvent(new Notification($data));
-        $this->assertNotEmpty(Message::findOne(1));
+        $this->assertNotEmpty(Message::find()->one());
     }
 }

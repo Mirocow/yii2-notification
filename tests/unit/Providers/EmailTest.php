@@ -23,6 +23,8 @@ class EmailTest extends \Codeception\Test\Unit
         foreach ($this->getFiles() as $fileName) {
             unlink($fileName);
         }
+
+        \Yii::$app->db->createCommand()->truncateTable('notification_status')->execute();
     }
 
     protected function getFiles()

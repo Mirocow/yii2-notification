@@ -30,6 +30,7 @@ $config = [
         // Notification by providers (Система нотификаций: email, sms, push, web, итд)
         'notification' => [
             'class' => 'mirocow\notification\Module',
+            'storeNotificationStatus' => true,
             'providers' => [
 
                 // notify
