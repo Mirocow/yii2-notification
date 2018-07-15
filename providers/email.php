@@ -120,7 +120,7 @@ class email extends Provider
                     ->setSubject($notification->subject)
                     ->send();
             } catch (\Exception $e){
-                $status = $e->getMessage();
+                $this->errors[] = $e->getMessage();
             }
 
             if (is_array($email)) {

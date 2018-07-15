@@ -47,7 +47,7 @@ class smsc extends Provider
                 $result = $sms->send_sms($phone, $notification->subject);
                 $status = $sms->isSuccess($result);
             } catch (\Exception $e){
-                $status = $e->getMessage();
+                $this->errors[] = $e->getMessage();
             }
 
             $this->status[$phone] = $status;

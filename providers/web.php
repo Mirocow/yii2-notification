@@ -41,7 +41,7 @@ class web  extends Provider
                 $status = $message->save();
                 unset($message);
             } catch (\Exception $e){
-                $status = $e->getMessage();
+                $this->errors[] = $e->getMessage();
             }
 
             $this->status[$toId] = $status;

@@ -68,8 +68,10 @@ class Module extends \yii\base\Module implements BootstrapInterface
         }
 
         $provider->send($notification);
-        $this->setProviderStatus($notification, $provider->status);
+        $this->setProviderStatus($notification, $provider);
+
         $event->status = $provider->status;
+        $event->errors = $provider->errors;
         $this->trigger(self::EVENT_AFTER_SEND, $event);
         unset($provider, $event);
     }
@@ -111,7 +113,12 @@ class Module extends \yii\base\Module implements BootstrapInterface
         return basename(str_replace('\\', '/', $class));
     }
 
-    private function setProviderStatus(Notification &$notification, $ret = null)
+    /**
+     * @param Notification $notification
+     * @param Provider $provider
+     * @return int|void
+     */
+    private function setProviderStatus(Notification &$notification, $provider = null)
     {
         if(!$this->storeNotificationStatus){
             return;
@@ -123,7 +130,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
         $status->event = $notification->name;
         $status->params = Json::encode($notification->getAttributes());
         $status->update_at = new Expression('CURRENT_TIMESTAMP');
-        $status->status = Json::encode($ret);
+        $status->status = $provider->getStatus();
         $status->save();
 
         return $status->id;

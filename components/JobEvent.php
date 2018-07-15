@@ -32,6 +32,11 @@ class JobEvent extends Event
     public $status = [];
 
     /**
+     * @var array
+     */
+    public $errors = [];
+
+    /**
      * @var boolean whether to continue send messages. Event handlers of
      * [[\mirocow\notification\Module::EVENT_BEFORE_SEND]] may set this property to decide whether
      * to continue running the send message.
