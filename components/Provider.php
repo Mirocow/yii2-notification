@@ -4,6 +4,7 @@ namespace mirocow\notification\components;
 
 use yii\base\Component;
 use yii\base\Exception;
+use yii\helpers\Json;
 
 abstract class Provider extends \yii\base\Component
 {
@@ -31,11 +32,13 @@ abstract class Provider extends \yii\base\Component
     }
 
     /**
-     * @return array|string
+     * @return string
      */
     public function getStatus()
     {
-        return isset($this->errors)? $this->errors: $this->status;
+        $status = isset($this->errors)? $this->errors: $this->status;
+
+        return Json::encode($status);
     }
 
 }
