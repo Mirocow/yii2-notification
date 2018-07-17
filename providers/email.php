@@ -113,6 +113,7 @@ class email extends Provider
         $views = isset($notification->view) ? $notification->view : $this->views;
 
         foreach ($emails as $email) {
+            $status = false;
             try {
                 $status = $mailer->compose($views, $params)
                     ->setFrom($from)
