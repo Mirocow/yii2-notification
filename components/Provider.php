@@ -36,7 +36,7 @@ abstract class Provider extends \yii\base\Component
      */
     public function getStatus()
     {
-        $status = isset($this->errors)? $this->errors: $this->status;
+        $status = !empty($this->errors)? $this->errors: $this->status;
 
         return Json::encode($status);
     }
