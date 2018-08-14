@@ -73,8 +73,11 @@ class email extends Provider
 
         $params = array_merge($notification->params, [
           'subject' => $notification->subject,
-          'message' => $notification->message
+          'content' => $notification->message
         ]);
+
+        // Registered variable
+        unset($params['message']);
 
         if(isset($notification->layouts['text'])){
             $mailer->textLayout = $notification->layouts['text'];
