@@ -29,7 +29,7 @@ class NotifyTest extends \Codeception\Test\Unit
             'name' => 'simple',
             'from' => \Yii::$app->params[ 'noreplyEmail' ],
             'to' => \Yii::$app->params[ 'noreplyEmail' ],
-            'message' => '',
+            'content' => '',
             'subject' => "Test subject",
             'path' => '@app/mail',
             'view' => ['html' => 'simple-html', 'text' => 'simple-text'],

@@ -66,7 +66,7 @@ use mirocow\notification\components\Notification;
       'phone' => $deal['userSeller']['phone_number'], // строка или массив
       'subject' => "\"{$deal['userBuyer']['nameForOut']}\" предлагает вам сделку для \"{$deal['ads']['product']->getName()}\"",
       'token' => 'TOKEN',
-      'message' => "",
+      'content' => "",
       'params' => [
         'productName' => $deal['ads']['product']->getName(),
         'avatar' => $deal['userBuyer']->avatarFile,
@@ -111,7 +111,7 @@ $notification = new Notification([
   'phone' => $deal['userSeller']['phone_number'], // строка или массив
   'subject' => "\"{$deal['userBuyer']['nameForOut']}\" предлагает вам сделку для \"{$deal['ads']['product']->getName()}\"",
   'token' => 'TOKEN',
-  'message' => "",
+  'content' => "",
   'params' => [
     'productName' => $deal['ads']['product']->getName(),
     'avatar' => $deal['userBuyer']->avatarFile,
