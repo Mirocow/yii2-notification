@@ -73,7 +73,6 @@ class email extends Provider
 
         $params = array_merge($notification->params, [
           'subject' => $notification->subject,
-          'content' => $notification->message
         ]);
 
         // Registered variable
