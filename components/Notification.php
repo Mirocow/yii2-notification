@@ -37,7 +37,7 @@ class Notification extends Event
     public $notify = '';
 
     /** @var string */
-    public $message = '';
+    public $content = '';
 
     /** @var string */
     public $path;
