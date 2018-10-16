@@ -1,5 +1,8 @@
 # Yii 2.0 Notification
 
+[![Latest Stable Version](https://poser.pugx.org/mirocow/yii2-notification/v/stable)](https://packagist.org/packages/mirocow/yii2-notification) 
+[![Latest Unstable Version](https://poser.pugx.org/mirocow/yii2-notification/v/unstable)](https://packagist.org/packages/mirocow/yii2-notification) 
+[![Total Downloads](https://poser.pugx.org/mirocow/yii2-notification/downloads)](https://packagist.org/packages/mirocow/yii2-notification) [![License](https://poser.pugx.org/mirocow/yii2-notification/license)](https://packagist.org/packages/mirocow/yii2-notification)
 
 ## Install
 
