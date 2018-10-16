@@ -1,6 +1,7 @@
 # Yii 2.0 Notification
 
-[![Latest Stable Version](https://poser.pugx.org/mirocow/yii2-notification/v/stable)](https://packagist.org/packages/mirocow/yii2-notification) 
+[![Latest Stable Version](https://poser.pugx.org/mirocow/yii2-notification/v/stable)](https://packagist.org/packages/mirocow/yii2-notification) [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FMirocow%2Fyii2-notification.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FMirocow%2Fyii2-notification?ref=badge_shield)
+
 [![Latest Unstable Version](https://poser.pugx.org/mirocow/yii2-notification/v/unstable)](https://packagist.org/packages/mirocow/yii2-notification) 
 [![Total Downloads](https://poser.pugx.org/mirocow/yii2-notification/downloads)](https://packagist.org/packages/mirocow/yii2-notification) [![License](https://poser.pugx.org/mirocow/yii2-notification/license)](https://packagist.org/packages/mirocow/yii2-notification)
 
@@ -151,3 +152,7 @@ Notification::trigger(self::className(),'Request', $notification);
 ```bash
 $ ./vendor/bin/codecept -c ./vendor/mirocow/yii2-notification run unit
 ```
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FMirocow%2Fyii2-notification.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FMirocow%2Fyii2-notification?ref=badge_large)
