@@ -24,6 +24,9 @@ class Notification extends Event
     /** @var array  */
     public $to = [];
 
+    /** @var array  */
+    public $replyTo = [];
+
     /** @var array */
     public $phone = [];
 
@@ -56,6 +59,9 @@ class Notification extends Event
 
     /** @var string  */
     public $HtmlBody = '';
+
+    /** @var array */
+    public $attaches = [];
 
     /** @var array */
     public $params = [];

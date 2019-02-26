@@ -6,6 +6,8 @@ use mirocow\notification\components\Notification;
 use mirocow\notification\components\Provider;
 use Yii;
 use yii\base\Exception;
+use yii\base\InvalidConfigException;
+use yii\mail\MessageInterface;
 
 /**
  * Class email
@@ -48,8 +50,12 @@ class email extends Provider
         $mailer = Yii::$app->get($provider);
 
         if(!$mailer){
-            throw new Exception();
+            throw new InvalidConfigException();
         }
+
+        /**
+         * Prepare
+         */
 
         if (!empty($this->config['view'])) {
             $mailer->setView($this->config['view']);
@@ -60,23 +66,16 @@ class email extends Provider
 
         $mailer->viewPath = isset($notification->path) ? $notification->path : $this->emailViewPath;
 
-        if(!empty($notification->from)){
-            $from = $notification->from;
-        }else {
-            if (isset($this->config['from'])) {
-                $from = $this->config['from'];
-            }
-            else {
-                $from = isset(Yii::$app->params['adminEmail']) ? Yii::$app->params['adminEmail'] : 'admin@localhost';
-            }
-        }
-
         $params = array_merge($notification->params, [
           'subject' => $notification->subject,
         ]);
 
         // Registered variable
         unset($params['message']);
+
+        /**
+         * Layouts
+         */
 
         if(isset($notification->layouts['text'])){
             $mailer->textLayout = $notification->layouts['text'];
@@ -92,13 +91,24 @@ class email extends Provider
             $mailer->htmlLayout = $this->layouts['html'];
         }
 
-        if($notification->TextBody){
-            $mailer->setTextBody($notification->TextBody);
+        /**
+         * From
+         */
+
+        if(!empty($notification->from)){
+            $from = $notification->from;
+        }else {
+            if (isset($this->config['from'])) {
+                $from = $this->config['from'];
+            }
+            else {
+                $from = isset(Yii::$app->params['adminEmail']) ? Yii::$app->params['adminEmail'] : 'admin@localhost';
+            }
         }
 
-        if($notification->HtmlBody){
-            $mailer->setHtmlBody($notification->HtmlBody);
-        }
+        /**
+         * To
+         */
 
         if (is_array($notification->to)) {
             if(is_array(reset($notification->to))){
@@ -112,16 +122,60 @@ class email extends Provider
             $emails = [$notification->to];
         }
 
+        /**
+         * Send emails
+         */
+
         $views = isset($notification->view) ? $notification->view : $this->views;
 
         foreach ($emails as $email) {
             $status = false;
             try {
-                $status = $mailer->compose($views, $params)
+
+                /** @var MessageInterface $message */
+                $message = $mailer
+                    ->compose($views, $params);
+
+                /**
+                 * Reply-To
+                 */
+
+                if($notification->replyTo){
+                    $message->setReplyTo($notification->replyTo);
+                }
+
+                /**
+                 * Body
+                 */
+
+                if($notification->TextBody){
+                    $message->setTextBody($notification->TextBody);
+                }
+
+                if($notification->HtmlBody){
+                    $message->setHtmlBody($notification->HtmlBody);
+                }
+
+                /**
+                 * Attaches
+                 */
+
+                if($notification->attaches){
+                    foreach ($notification->attaches as $attach) {
+                        $message->attach($attach);
+                    }
+                }
+
+                /**
+                 * Send email
+                 */
+
+                $status = $message
                     ->setFrom($from)
                     ->setTo($email)
                     ->setSubject($notification->subject)
                     ->send();
+
             } catch (\Exception $e){
                 $this->errors[] = $e->getMessage();
             }
