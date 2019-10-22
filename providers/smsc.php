@@ -1,10 +1,11 @@
 <?php
 
 namespace mirocow\notification\providers;
+
 use mirocow\notification\components\Notification;
 use mirocow\notification\components\Provider;
+use mirocow\notification\helpers\ErrorHelper;
 use Yii;
-use yii\base\Component;
 
 /**
  * Class smsc
@@ -27,27 +28,30 @@ class smsc extends Provider
 
     /**
      * @param Notification $notification
+     *
      * @return bool
      */
     public function send(Notification $notification)
     {
-        if(empty($notification->phone)) return;
+        if (empty($notification->phone)) {
+            return;
+        }
 
         /** @var \ladamalina\smsc\Smsc $sms */
         $sms = Yii::createObject(array_merge(['class' => 'ladamalina\smsc\Smsc'], $this->config));
 
-        if(is_array($notification->phone)){
+        if (is_array($notification->phone)) {
             $phones = $notification->phone;
         } else {
             $phones = [$notification->phone];
         }
 
-        foreach ($phones as $phone){
+        foreach ($phones as $phone) {
             try {
                 $result = $sms->send_sms($phone, $notification->subject);
                 $status = $sms->isSuccess($result);
-            } catch (\Exception $e){
-                $this->errors[] = $e->getMessage();
+            } catch (\Exception $e) {
+                $this->errors[] = ErrorHelper::message($e);
             }
 
             $this->status[$phone] = $status;

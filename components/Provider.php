@@ -2,13 +2,12 @@
 
 namespace mirocow\notification\components;
 
-use yii\base\Component;
 use yii\base\Exception;
 use yii\helpers\Json;
 
 abstract class Provider extends \yii\base\Component
 {
-    /** @var array  */
+    /** @var array */
     public $config = [];
 
     /** @var array */
@@ -25,9 +24,11 @@ abstract class Provider extends \yii\base\Component
 
     /**
      * @param Notification $notification
+     *
      * @throws Exception
      */
-    public function send(Notification $notification){
+    public function send(Notification $notification)
+    {
         throw new Exception('Not found notification handler');
     }
 
@@ -37,7 +38,6 @@ abstract class Provider extends \yii\base\Component
     public function getStatus()
     {
         $status = !empty($this->errors)? $this->errors: $this->status;
-
         return Json::encode($status);
     }
 

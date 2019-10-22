@@ -7,18 +7,21 @@
  */
 
 namespace mirocow\notification\providers;
-use mirocow\notification\components\Provider;
+
 use mirocow\notification\components\Notification;
+use mirocow\notification\components\Provider;
 use Yii;
 
-class notify  extends Provider
+class notify extends Provider
 {
     /**
      * @param Notification $notification
      */
     public function send(Notification $notification)
     {
-        if(empty($notification->notify)) return;
+        if (empty($notification->notify)) {
+            return;
+        }
 
         Yii::$app->session->addFlash($notification->notify[0], $notification->notify[1]);
 

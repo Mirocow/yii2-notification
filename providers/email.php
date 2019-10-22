@@ -4,6 +4,7 @@ namespace mirocow\notification\providers;
 
 use mirocow\notification\components\Notification;
 use mirocow\notification\components\Provider;
+use mirocow\notification\helpers\ErrorHelper;
 use Yii;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
@@ -33,12 +34,15 @@ class email extends Provider
 
     /**
      * @param Notification $notification
+     *
      * @return bool
      * @throws Exception
      */
     public function send(Notification $notification)
     {
-        if(empty($notification->to)) return;
+        if (empty($notification->to)) {
+            return;
+        }
 
         $provider = 'mailer';
 
@@ -49,7 +53,7 @@ class email extends Provider
         /** @var \yii\swiftmailer\Mailer $mailer */
         $mailer = Yii::$app->get($provider);
 
-        if(!$mailer){
+        if (!$mailer) {
             throw new InvalidConfigException();
         }
 
@@ -64,10 +68,11 @@ class email extends Provider
 
         $mailer->view->params['notification'] = $notification;
 
-        $mailer->viewPath = isset($notification->path) ? $notification->path : $this->emailViewPath;
+        $mailer->viewPath = isset($notification->path)? $notification->path: $this->emailViewPath;
 
         $params = array_merge($notification->params, [
-          'subject' => $notification->subject,
+            'subject' => $notification->subject,
+            'content' => $notification->content,
         ]);
 
         // Registered variable
@@ -77,17 +82,15 @@ class email extends Provider
          * Layouts
          */
 
-        if(isset($notification->layouts['text'])){
+        if (isset($notification->layouts['text'])) {
             $mailer->textLayout = $notification->layouts['text'];
-        }
-        elseif(isset($this->layouts['text'])){
+        } elseif (isset($this->layouts['text'])) {
             $mailer->textLayout = $this->layouts['text'];
         }
 
-        if(isset($notification->layouts['html'])){
+        if (isset($notification->layouts['html'])) {
             $mailer->htmlLayout = $notification->layouts['html'];
-        }
-        elseif(isset($this->layouts['html'])){
+        } elseif (isset($this->layouts['html'])) {
             $mailer->htmlLayout = $this->layouts['html'];
         }
 
@@ -95,14 +98,13 @@ class email extends Provider
          * From
          */
 
-        if(!empty($notification->from)){
+        if (!empty($notification->from)) {
             $from = $notification->from;
-        }else {
+        } else {
             if (isset($this->config['from'])) {
                 $from = $this->config['from'];
-            }
-            else {
-                $from = isset(Yii::$app->params['adminEmail']) ? Yii::$app->params['adminEmail'] : 'admin@localhost';
+            } else {
+                $from = isset(Yii::$app->params['adminEmail'])? Yii::$app->params['adminEmail']: 'admin@localhost';
             }
         }
 
@@ -111,14 +113,13 @@ class email extends Provider
          */
 
         if (is_array($notification->to)) {
-            if(is_array(reset($notification->to))){
+            if (is_array(reset($notification->to))) {
                 $emails = $notification->to;
             } else {
                 // like [email => userName]
                 $emails = [$notification->to];
             }
-        }
-        else {
+        } else {
             $emails = [$notification->to];
         }
 
@@ -126,21 +127,20 @@ class email extends Provider
          * Send emails
          */
 
-        $views = isset($notification->view) ? $notification->view : $this->views;
+        $views = isset($notification->view)? $notification->view: $this->views;
 
         foreach ($emails as $email) {
             $status = false;
             try {
 
                 /** @var MessageInterface $message */
-                $message = $mailer
-                    ->compose($views, $params);
+                $message = $mailer->compose($views, $params);
 
                 /**
                  * Reply-To
                  */
 
-                if($notification->replyTo){
+                if ($notification->replyTo) {
                     $message->setReplyTo($notification->replyTo);
                 }
 
@@ -148,11 +148,11 @@ class email extends Provider
                  * Body
                  */
 
-                if($notification->TextBody){
+                if ($notification->TextBody) {
                     $message->setTextBody($notification->TextBody);
                 }
 
-                if($notification->HtmlBody){
+                if ($notification->HtmlBody) {
                     $message->setHtmlBody($notification->HtmlBody);
                 }
 
@@ -160,7 +160,7 @@ class email extends Provider
                  * Attaches
                  */
 
-                if($notification->attaches){
+                if ($notification->attaches) {
                     foreach ($notification->attaches as $attach) {
                         $message->attach($attach);
                     }
@@ -170,14 +170,10 @@ class email extends Provider
                  * Send email
                  */
 
-                $status = $message
-                    ->setFrom($from)
-                    ->setTo($email)
-                    ->setSubject($notification->subject)
-                    ->send();
+                $status = $message->setFrom($from)->setTo($email)->setSubject($notification->subject)->send();
 
-            } catch (\Exception $e){
-                $this->errors[] = $e->getMessage();
+            } catch (\Exception $e) {
+                $this->errors[] = ErrorHelper::message($e);
             }
 
             if (is_array($email)) {
