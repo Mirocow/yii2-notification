@@ -39,6 +39,10 @@ class Module extends \yii\base\Module implements BootstrapInterface
 
     /**
      * @param Notification $notification
+     *
+     * @return array|string|void
+     * @throws Exception
+     * @throws \yii\base\InvalidConfigException
      */
     public function sendEvent(Notification $notification)
     {
@@ -60,9 +64,9 @@ class Module extends \yii\base\Module implements BootstrapInterface
             'event' => $notification->name,
             'params' => $notification,
         ]);
-
         $this->trigger(self::EVENT_BEFORE_SEND, $event);
 
+        // Skip if is not valid
         if(!$event->isValid){
             return;
         }
@@ -74,6 +78,8 @@ class Module extends \yii\base\Module implements BootstrapInterface
         $event->errors = $provider->errors;
         $this->trigger(self::EVENT_AFTER_SEND, $event);
         unset($provider, $event);
+
+        return (bool) !$provider->errors;
     }
 
     /**
