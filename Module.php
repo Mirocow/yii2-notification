@@ -59,8 +59,9 @@ class Module extends \yii\base\Module implements BootstrapInterface
             return;
         }
 
+        $reflect = new \ReflectionClass($provider);
         $event = new JobEvent([
-            'provider' => $notification->data['providerName'],
+            'provider' => $reflect->getShortName(),
             'event' => $notification->name,
             'params' => $notification,
         ]);
@@ -77,9 +78,10 @@ class Module extends \yii\base\Module implements BootstrapInterface
         $event->status = $provider->status;
         $event->errors = $provider->errors;
         $this->trigger(self::EVENT_AFTER_SEND, $event);
-        unset($provider, $event);
 
-        return (bool) !$provider->errors;
+        if($provider->errors){
+           throw new Exception(Yii::t('app', implode("\n", $provider->errors)));
+        }
     }
 
     /**
