@@ -80,7 +80,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
         $this->trigger(self::EVENT_AFTER_SEND, $event);
 
         if($provider->errors){
-           throw new Exception(Yii::t('app', implode("\n", $provider->errors)));
+           throw new Exception(Yii::t('app', "Rised exception in the provider {provider}", ['provider' => $reflect->getShortName()]));
         }
     }
 

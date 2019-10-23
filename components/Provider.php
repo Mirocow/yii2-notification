@@ -16,7 +16,7 @@ abstract class Provider extends \yii\base\Component
     /** @var string|array */
     public $status = [];
 
-    /** @var string|array */
+    /** @var array */
     public $errors = [];
 
     /** @var bool */
